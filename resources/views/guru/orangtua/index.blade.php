@@ -48,6 +48,9 @@
                             </span>
                         </td>
                         <td class="pe-4 text-end">
+                            <a href="{{ route('guru.orangtua.edit', $ortu->id) }}" class="btn btn-soft-primary btn-sm rounded-pill px-3 border-0 shadow-none me-1">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
                             <form action="{{ route('guru.orangtua.destroy', $ortu->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus akun orang tua ini? Tindakan ini tidak dapat dibatalkan.')">
                                 @csrf
                                 @method('DELETE')

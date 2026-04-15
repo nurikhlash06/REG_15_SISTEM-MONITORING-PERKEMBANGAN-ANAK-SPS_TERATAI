@@ -19,6 +19,23 @@
                 </div>
                 <h4 class="fw-bold mb-1">{{ $perkembangan->aspek }}</h4>
                 <p class="text-muted small">Catatan untuk {{ $perkembangan->murid?->nama_lengkap ?? '-' }}</p>
+                <div class="d-flex justify-content-center mt-2">
+                    @php 
+                        $aspekClass = match(true) {
+                            str_contains($perkembangan->aspek, 'Agama') => 'aspek-agama',
+                            str_contains($perkembangan->aspek, 'Fisik') => 'aspek-fisik',
+                            str_contains($perkembangan->aspek, 'Kognitif') => 'aspek-kognitif',
+                            str_contains($perkembangan->aspek, 'Bahasa') => 'aspek-bahasa',
+                            str_contains($perkembangan->aspek, 'Sosial') => 'aspek-sosial',
+                            str_contains($perkembangan->aspek, 'Seni') => 'aspek-seni',
+                            default => ''
+                        };
+                    @endphp
+                    <div class="aspek-icon-box bg-aspek text-aspek {{ $aspekClass }}" 
+                         style="width: 50px; height: 50px;">
+                        <i class="bi {{ $styles['icon'] ?? 'bi-pencil' }} fs-4"></i>
+                    </div>
+                </div>
             </div>
 
             <div class="bg-light rounded-4 p-3 mb-4">

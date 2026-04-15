@@ -5,11 +5,14 @@ namespace App\Http\Controllers\OrangTua;
 use App\Http\Controllers\Controller;
 use App\Models\Murid;
 use App\Models\Perkembangan;
+use App\Traits\HasAspekStyles;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PerkembanganController extends Controller
 {
+    use HasAspekStyles;
+
     public function index(Request $request)
     {
         $userId = Auth::id();
@@ -39,8 +42,10 @@ class PerkembanganController extends Controller
         }
 
         $perkembangan = $perkembanganQuery->paginate(10)->withQueryString();
+        $aspekOptions = array_keys($this->getColorMap());
+        $colorMap = $this->getColorMap();
 
-        return view('orangtua.perkembangan.index', compact('murid', 'perkembangan', 'selectedMuridId', 'selectedAspek'));
+        return view('orangtua.perkembangan.index', compact('murid', 'perkembangan', 'selectedMuridId', 'selectedAspek', 'aspekOptions', 'colorMap'));
     }
 
     public function show(Perkembangan $perkembangan)
@@ -53,8 +58,11 @@ class PerkembanganController extends Controller
         }
 
         $perkembangan->load('murid', 'guruUser');
+        $aspekOptions = array_keys($this->getColorMap());
+        $dynamicStyles = $this->generateDynamicStyles($aspekOptions, 'aspek');
+        $colorMap = $this->getColorMap();
 
-        return view('orangtua.perkembangan.show', compact('perkembangan'));
+        return view('orangtua.perkembangan.show', compact('perkembangan', 'dynamicStyles', 'colorMap'));
     }
 }
 

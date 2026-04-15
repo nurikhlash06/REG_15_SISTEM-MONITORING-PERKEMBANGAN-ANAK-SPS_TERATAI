@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\OrangTua;
 
 use App\Http\Controllers\Controller;
+use App\Traits\HasAspekStyles;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class DashboardController extends Controller
 {
+    use HasAspekStyles;
+
     public function index()
     {
         $user = Auth::user();
@@ -20,8 +23,15 @@ class DashboardController extends Controller
 
         $anak = $this->anakCards($user->id);
         $chartPerBulan = $this->perkembanganBulananChart($user->id);
-        $aspekStats = $this->aspekStats($user->id);
-        
+
+        // Hitung statistik aspek per anak
+        foreach ($anak as $a) {
+            $a->aspek_stats = $this->aspekStatsPerAnak($a->id);
+        }
+
+        // Generate dynamic styles once for all aspects
+        $dynamicStyles = $this->generateDynamicStyles(array_keys($this->getColorMap()), 'aspect');
+
         // Fitur Tambahan: Tips Parenting Harian
         $dailyTip = $this->getDailyTip();
 
@@ -32,8 +42,8 @@ class DashboardController extends Controller
             ],
             'anak' => $anak,
             'chartPerBulan' => $chartPerBulan,
-            'aspekStats' => $aspekStats,
             'dailyTip' => $dailyTip,
+            'dynamicStyles' => $dynamicStyles,
         ]);
     }
 
@@ -62,7 +72,7 @@ class DashboardController extends Controller
         return $tips[$index];
     }
 
-    private function aspekStats(int $userId): array
+    private function aspekStatsPerAnak(int $muridId): array
     {
         if (! Schema::hasTable('murid') || ! Schema::hasTable('perkembangan')) {
             return [];
@@ -77,19 +87,17 @@ class DashboardController extends Controller
             'Seni'
         ];
 
-        // Ambil rata-rata skor per aspek untuk seluruh anak orang tua ini
-        // Kita hitung persentase: (rata-rata skor / 4) * 100
-        $rows = DB::table('murid')
-            ->join('perkembangan', 'perkembangan.murid_id', '=', 'murid.id')
-            ->where('murid.id_user_orangtua', $userId)
-            ->whereIn('perkembangan.aspek', $targetAspeks)
-            ->where('perkembangan.tanggal', '>=', now()->startOfMonth()) // Hanya data bulan ini (Reset Bulanan)
+        // Ambil rata-rata skor per aspek untuk anak spesifik ini
+        $rows = DB::table('perkembangan')
+            ->where('murid_id', $muridId)
+            ->whereIn('aspek', $targetAspeks)
+            ->where('tanggal', '>=', now()->startOfMonth()) // Hanya data bulan ini
             ->select(
-                'perkembangan.aspek',
-                DB::raw('count(perkembangan.id) as total'),
-                DB::raw('avg(perkembangan.skor) as rata_skor')
+                'aspek',
+                DB::raw('count(id) as total'),
+                DB::raw('avg(skor) as rata_skor')
             )
-            ->groupBy('perkembangan.aspek')
+            ->groupBy('aspek')
             ->get()
             ->keyBy('aspek');
 
@@ -98,7 +106,6 @@ class DashboardController extends Controller
             $avg = $rows->has($aspek) ? (float) $rows[$aspek]->rata_skor : 0;
             $percent = $avg > 0 ? round(($avg / 4) * 100) : 0;
 
-            // Pastikan minimal 1% jika sudah ada data
             if ($percent == 0 && ($rows->has($aspek) && $rows[$aspek]->total > 0)) {
                 $percent = 1;
             }
@@ -108,8 +115,7 @@ class DashboardController extends Controller
                 'count' => $rows->has($aspek) ? $rows[$aspek]->total : 0,
                 'percent' => $percent,
                 'status' => $this->getStatusLabel($percent),
-                'icon' => $this->getAspekIcon($aspek),
-                'color' => $this->getAspekColor($aspek),
+                'styles' => $this->getColorMap()[$aspek] ?? [],
             ];
         }
 
@@ -125,32 +131,6 @@ class DashboardController extends Controller
         return 'Sangat Baik';
     }
 
-    private function getAspekIcon(string $aspek): string
-    {
-        return match ($aspek) {
-            'Nilai Agama/Moral' => 'bi-moon-stars',
-            'Fisik-Motorik' => 'bi-bicycle',
-            'Kognitif' => 'bi-lightbulb',
-            'Bahasa' => 'bi-chat-quote',
-            'Sosial-Emosional' => 'bi-heart-pulse',
-            'Seni' => 'bi-palette',
-            default => 'bi-journal-text',
-        };
-    }
-
-    private function getAspekColor(string $aspek): string
-    {
-        return match ($aspek) {
-            'Nilai Agama/Moral' => 'blue',
-            'Fisik-Motorik' => 'green',
-            'Kognitif' => 'yellow',
-            'Bahasa' => 'pink',
-            'Sosial-Emosional' => 'red',
-            'Seni' => 'purple',
-            default => 'primary',
-        };
-    }
-
     private function anakCards(int $userId)
     {
         if (! Schema::hasTable('murid')) {
@@ -163,6 +143,7 @@ class DashboardController extends Controller
                     ->whereMonth('perkembangan.tanggal', now()->month)
                     ->whereYear('perkembangan.tanggal', now()->year);
             })
+            ->leftJoin('kelas', 'murid.kelas_id', '=', 'kelas.id')
             ->where('murid.id_user_orangtua', $userId)
             ->select(
                 'murid.id',
@@ -172,10 +153,12 @@ class DashboardController extends Controller
                 'murid.email_orang_tua',
                 'murid.berat_badan',
                 'murid.tinggi_badan',
-                'murid.tinggi_lutut',
+                'murid.lingkar_kepala',
+                'kelas.nama_kelas',
+                'kelas.kode_kelas',
                 DB::raw('count(perkembangan.id) as total_perkembangan')
             )
-            ->groupBy('murid.id', 'murid.nama_lengkap', 'murid.foto', 'murid.nama_orang_tua', 'murid.email_orang_tua', 'murid.berat_badan', 'murid.tinggi_badan', 'murid.tinggi_lutut')
+            ->groupBy('murid.id', 'murid.nama_lengkap', 'murid.foto', 'murid.nama_orang_tua', 'murid.email_orang_tua', 'murid.berat_badan', 'murid.tinggi_badan', 'murid.lingkar_kepala', 'kelas.nama_kelas', 'kelas.kode_kelas')
             ->orderBy('murid.nama_lengkap')
             ->get();
 

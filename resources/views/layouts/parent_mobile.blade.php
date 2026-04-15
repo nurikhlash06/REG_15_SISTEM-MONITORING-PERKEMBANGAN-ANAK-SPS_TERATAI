@@ -129,6 +129,46 @@
             padding: 4px 10px;
         }
 
+        /* Aspect Specific Styles */
+        .aspek-icon-box {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Agama/Moral - Gold/Yellow */
+        .aspek-agama { --aspek-color: #f1c40f; --aspek-bg: rgba(241, 196, 15, 0.1); }
+        /* Fisik-Motorik - Green */
+        .aspek-fisik { --aspek-color: #2ecc71; --aspek-bg: rgba(46, 204, 113, 0.1); }
+        /* Kognitif - Light Blue */
+        .aspek-kognitif { --aspek-color: #3498db; --aspek-bg: rgba(52, 152, 219, 0.1); }
+        /* Bahasa - Purple/Dark Blue */
+        .aspek-bahasa { --aspek-color: #9b59b6; --aspek-bg: rgba(155, 89, 182, 0.1); }
+        /* Sosial-Emosional - Red/Pink */
+        .aspek-sosial { --aspek-color: #e91e63; --aspek-bg: rgba(233, 30, 99, 0.1); }
+        /* Seni - Vibrant Pink/Purple Gradient */
+        .aspek-seni { 
+            --aspek-color: #d946ef; 
+            --aspek-bg: rgba(217, 70, 239, 0.1);
+            --aspek-gradient: linear-gradient(135deg, #d946ef 0%, #6c5ce7 100%);
+        }
+
+        .bg-aspek { background-color: var(--aspek-bg) !important; }
+        .text-aspek { color: var(--aspek-color) !important; }
+        .border-aspek { border-color: var(--aspek-color) !important; }
+        .progress-aspek { background-color: var(--aspek-color) !important; }
+        .badge-aspek { background-color: var(--aspek-bg); color: var(--aspek-color); }
+        
+        /* Special case for Seni gradient icons */
+        .aspek-seni .aspek-icon-box {
+            background: var(--aspek-gradient) !important;
+            color: white !important;
+        }
+        .aspek-seni .text-aspek { color: #d946ef !important; }
+
         /* Chart adjustments for mobile */
         canvas {
             max-width: 100% !important;

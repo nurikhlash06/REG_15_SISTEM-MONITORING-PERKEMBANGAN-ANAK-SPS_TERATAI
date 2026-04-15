@@ -46,6 +46,41 @@ class UserOrangtuaController extends Controller
             ->with('success', 'Akun orang tua baru berhasil dibuat.');
     }
 
+    public function edit(User $orangtua)
+    {
+        if ($orangtua->role !== 'orang_tua') {
+            return back()->with('error', 'Hanya akun orang tua yang dapat diedit.');
+        }
+
+        return view('guru.orangtua.edit', compact('orangtua'));
+    }
+
+    public function update(Request $request, User $orangtua)
+    {
+        if ($orangtua->role !== 'orang_tua') {
+            return back()->with('error', 'Hanya akun orang tua yang dapat diperbarui.');
+        }
+
+        $data = $request->validate([
+            'name'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'email', 'max:255', 'unique:users,email,' . $orangtua->id],
+            'password' => ['nullable', 'string', 'min:8'],
+        ]);
+
+        $orangtua->name = $data['name'];
+        $orangtua->email = $data['email'];
+        
+        if (!empty($data['password'])) {
+            $orangtua->password = Hash::make($data['password']);
+        }
+
+        $orangtua->save();
+
+        return redirect()
+            ->route('guru.orangtua.index')
+            ->with('success', 'Akun orang tua berhasil diperbarui.');
+    }
+
     public function destroy(User $orangtua)
     {
         if ($orangtua->role !== 'orang_tua') {

@@ -59,15 +59,16 @@
     </div>
 
     <div class="col-md-6">
-        <label class="form-label">Rombel / Kelas</label>
-        <input
-            type="text"
-            name="rombel"
-            value="{{ old('rombel', $murid->rombel ?? '') }}"
-            class="form-control @error('rombel') is-invalid @enderror"
-            placeholder="Contoh: Kelas A1 / Kelompok Bermain"
-        >
-        @error('rombel') <div class="invalid-feedback">{{ $message }}</div> @enderror
+        <label class="form-label">Kelas</label>
+        <select name="kelas_id" class="form-select @error('kelas_id') is-invalid @enderror">
+            <option value="">- pilih kelas -</option>
+            @foreach($kelas as $k)
+                <option value="{{ $k->id }}" @selected(old('kelas_id', $murid->kelas_id ?? '') == $k->id)>
+                    {{ $k->nama_kelas }} ({{ $k->kode_kelas }})
+                </option>
+            @endforeach
+        </select>
+        @error('kelas_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
     </div>
 
     <!-- Data Fisik Murid -->
@@ -104,18 +105,18 @@
     </div>
 
     <div class="col-md-4">
-        <label class="form-label">Lingkah Kepala (cm)</label>
+        <label class="form-label">Lingkar Kepala (cm)</label>
         <div class="input-group">
             <input
                 type="number"
                 step="0.1"
-                name="tinggi_lutut"
+                name="lingkar_kepala"
                 value="{{ old('lingkar_kepala', $murid->lingkar_kepala ?? '') }}"
-                class="form-control @error('tinggi_lutut') is-invalid @enderror"
+                class="form-control @error('lingkar_kepala') is-invalid @enderror"
                 placeholder="0.0"
             >
             <span class="input-group-text">cm</span>
-            @error('tinggi_lutut') <div class="invalid-feedback">{{ $message }}</div> @enderror
+            @error('lingkar_kepala') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
     </div>
 
@@ -142,18 +143,6 @@
             placeholder="contoh@email.com"
         >
         @error('email_orang_tua') <div class="invalid-feedback">{{ $message }}</div> @enderror
-    </div>
-
-    <div class="col-md-6">
-        <label class="form-label">Password Orang Tua</label>
-        <input
-            type="password"
-            name="password_orang_tua"
-            class="form-control @error('password_orang_tua') is-invalid @enderror"
-            placeholder="Min. 8 karakter (default: 12345678)"
-        >
-        <div class="form-text small text-muted">Gunakan email & password ini untuk login orang tua.</div>
-        @error('password_orang_tua') <div class="invalid-feedback">{{ $message }}</div> @enderror
     </div>
 
     <div class="col-12">

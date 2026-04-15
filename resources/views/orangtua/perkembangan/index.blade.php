@@ -47,11 +47,22 @@
     <!-- List of Development Notes -->
     <div class="d-flex flex-column gap-3">
         @forelse($perkembangan as $p)
-            <div class="card card-mobile p-3 border-start border-4" style="border-left-color: #f5576c !important;">
+            @php 
+                $aspekClass = match(true) {
+                    str_contains($p->aspek, 'Agama') => 'aspek-agama',
+                    str_contains($p->aspek, 'Fisik') => 'aspek-fisik',
+                    str_contains($p->aspek, 'Kognitif') => 'aspek-kognitif',
+                    str_contains($p->aspek, 'Bahasa') => 'aspek-bahasa',
+                    str_contains($p->aspek, 'Sosial') => 'aspek-sosial',
+                    str_contains($p->aspek, 'Seni') => 'aspek-seni',
+                    default => ''
+                };
+            @endphp
+            <div class="card card-mobile p-3 border-start border-4 {{ $aspekClass }} border-aspek bg-aspek">
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <div>
                         <span class="badge bg-light text-dark border small mb-1">{{ $p->tanggal?->format('d M Y') ?? '-' }}</span>
-                        <h6 class="fw-bold mb-0 text-primary-gradient">{{ $p->aspek }}</h6>
+                        <h6 class="fw-bold mb-0 text-aspek">{{ $p->aspek }}</h6>
                     </div>
                     <a href="{{ route('orangtua.perkembangan.show', $p) }}" class="btn btn-sm btn-light rounded-pill px-3">
                         Detail <i class="bi bi-chevron-right ms-1 small"></i>

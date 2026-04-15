@@ -13,6 +13,7 @@ class Perkembangan extends Model
         'user_id_guru',
         'tanggal',
         'aspek',
+        'skor',
         'catatan',
     ];
 

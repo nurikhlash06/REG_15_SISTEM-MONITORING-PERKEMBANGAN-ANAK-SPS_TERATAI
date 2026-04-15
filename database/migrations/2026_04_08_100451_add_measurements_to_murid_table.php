@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('murid', function (Blueprint $table) {
             $table->float('berat_badan')->nullable()->after('tanggal_lahir');
             $table->float('tinggi_badan')->nullable()->after('berat_badan');
-            $table->float('tinggi_lutut')->nullable()->after('tinggi_badan');
+            $table->float('lingkar_kepala')->nullable()->after('tinggi_badan');
         });
     }
 
@@ -24,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('murid', function (Blueprint $table) {
-            $table->dropColumn(['berat_badan', 'tinggi_badan', 'tinggi_lutut']);
+            $table->dropColumn(['berat_badan', 'tinggi_badan', 'lingkar_kepala']);
         });
     }
 };

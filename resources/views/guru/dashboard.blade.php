@@ -34,6 +34,7 @@
          id="dashboard-stats"
          data-aspek-labels="{{ json_encode($chartAspek['labels'] ?? []) }}"
          data-aspek-values="{{ json_encode($chartAspek['data'] ?? []) }}"
+         data-aspek-colors="{{ json_encode(collect($chartAspek['labels'])->map(fn($label) => $colorMap[$label]['text'] ?? '#4361ee')) }}"
          data-bulan-labels="{{ json_encode($chartBulanan['labels'] ?? []) }}"
          data-bulan-values="{{ json_encode($chartBulanan['data'] ?? []) }}">
         
@@ -82,9 +83,13 @@
                     </div>
                     <h4 class="fw-bold text-dark mb-2">{{ $stats['progress_bulan_ini']['count'] }} <small class="text-muted fs-6">/ {{ $stats['total_murid'] }} Murid</small></h4>
                     <div class="progress" style="height: 8px; border-radius: 10px; background-color: rgba(0,0,0,0.05);">
+                        @php 
+                            $pctWidth = (int)($stats['progress_bulan_ini']['percentage'] ?? 0);
+                            $pctStyle = "width:{$pctWidth}%";
+                        @endphp
                         <div class="progress-bar bg-info progress-bar-striped progress-bar-animated" 
                              role="progressbar" 
-                             @style(['width' => ($stats['progress_bulan_ini']['percentage'] ?? 0) . '%'])>
+                             style="<?php echo $pctStyle; ?>">
                         </div>
                     </div>
                 </div>
@@ -129,9 +134,9 @@
                         <i class="bi bi-rulers fs-3"></i>
                     </div>
                     <div>
-                        <p class="text-muted small fw-bold mb-0">Rata-rata TL</p>
-                        <h4 class="fw-bold text-dark mb-0">{{ $stats['fisik']['avg_tl'] }} <small class="text-muted fs-6">cm</small></h4>
-                        <small class="text-muted" style="font-size: 0.65rem;">Dari {{ $stats['fisik']['count_tl'] }} murid</small>
+                        <p class="text-muted small fw-bold mb-0">Rata-rata LK</p>
+                        <h4 class="fw-bold text-dark mb-0">{{ $stats['fisik']['avg_lk'] }} <small class="text-muted fs-6">cm</small></h4>
+                        <small class="text-muted" style="font-size: 0.65rem;">Dari {{ $stats['fisik']['count_lk'] }} murid</small>
                     </div>
                 </div>
             </div>
@@ -215,8 +220,8 @@
                         <div class="col-12">
                             <a href="{{ route('guru.murid.index') }}" class="btn btn-light w-100 text-start p-3 border-0 shadow-none hover-action" style="border-radius: 15px; background: #fdf0ff;">
                                 <div class="d-flex align-items-center">
-                                    <div class="bg-purple bg-opacity-10 text-purple rounded-3 p-2 me-3">
-                                        <i class="bi bi-collection-fill fs-4"></i>
+                                    <div class="bg-soft-purple text-purple rounded-3 p-2 me-3">
+                                        <i class="bi bi-people-fill fs-4"></i>
                                     </div>
                                     <div>
                                         <div class="fw-bold text-dark small">Daftar Murid</div>
@@ -244,28 +249,27 @@
                     <div class="timeline-simple">
                         @forelse($recentActivities as $activity)
                             <div class="timeline-item d-flex gap-3 mb-4">
-                                <div class="timeline-marker bg-info bg-opacity-10 text-info rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
-                                    @php
-                                        $icon = match($activity->aspek) {
-                                            'Nilai Agama/Moral' => 'bi-moon-stars',
-                                            'Fisik-Motorik' => 'bi-bicycle',
-                                            'Kognitif' => 'bi-lightbulb',
-                                            'Bahasa' => 'bi-chat-quote',
-                                            'Sosial-Emosional' => 'bi-heart-pulse',
-                                            'Seni' => 'bi-palette',
-                                            default => 'bi-pencil-square',
-                                        };
-                                        $colorClass = match($activity->aspek) {
-                                            'Nilai Agama/Moral' => 'text-primary',
-                                            'Fisik-Motorik' => 'text-success',
-                                            'Kognitif' => 'text-warning',
-                                            'Bahasa' => 'text-pink',
-                                            'Sosial-Emosional' => 'text-danger',
-                                            'Seni' => 'text-purple',
-                                            default => 'text-info',
-                                        };
-                                    @endphp
-                                    <i class="bi {{ $icon }} {{ $colorClass }}"></i>
+                                @php
+                                    $styles = $colorMap[$activity->aspek] ?? [
+                                        'icon' => 'bi-pencil-square',
+                                        'text' => '#64748b',
+                                        'icon_bg' => 'rgba(0,0,0,0.05)'
+                                    ];
+                                @endphp
+                                @php
+                                    $aspekClass = match(true) {
+                                        str_contains($activity->aspek, 'Agama') => 'aspek-agama',
+                                        str_contains($activity->aspek, 'Fisik') => 'aspek-fisik',
+                                        str_contains($activity->aspek, 'Kognitif') => 'aspek-kognitif',
+                                        str_contains($activity->aspek, 'Bahasa') => 'aspek-bahasa',
+                                        str_contains($activity->aspek, 'Sosial') => 'aspek-sosial',
+                                        str_contains($activity->aspek, 'Seni') => 'aspek-seni',
+                                        default => ''
+                                    };
+                                @endphp
+                                <div class="aspek-icon-box bg-aspek text-aspek flex-shrink-0 {{ $aspekClass }}" 
+                                     style="width: 40px; height: 40px;">
+                                    <i class="bi {{ $styles['icon'] }}"></i>
                                 </div>
                                 <div class="timeline-content border-bottom pb-3 w-100">
                                     <div class="d-flex justify-content-between align-items-start mb-1">
@@ -388,8 +392,6 @@
         70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
         100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
     }
-    .bg-purple { background-color: #6f42c1; }
-    .text-purple { color: #6f42c1; }
 </style>
 @endpush
 
@@ -401,18 +403,11 @@
 
         const aspekLabels = JSON.parse(statsElement.dataset.aspekLabels || '[]');
         const aspekData = JSON.parse(statsElement.dataset.aspekValues || '[]');
+        const aspekColors = JSON.parse(statsElement.dataset.aspekColors || '[]');
         const bulanLabels = JSON.parse(statsElement.dataset.bulanLabels || '[]');
         const bulanData = JSON.parse(statsElement.dataset.bulanValues || '[]');
 
         if (aspekLabels.length && document.getElementById('chart-aspek')) {
-            const colors = [
-                '#4361ee', // Agama
-                '#2ec4b6', // Fisik
-                '#ff9f1c', // Kognitif
-                '#e71d36', // Bahasa
-                '#7209b7', // Sosial
-                '#4cc9f0'  // Seni
-            ];
             new Chart(document.getElementById('chart-aspek'), {
                 type: 'bar',
                 data: {
@@ -420,12 +415,12 @@
                     datasets: [{
                         label: 'Jumlah Capaian',
                         data: aspekData,
-                        backgroundColor: colors.map(c => c + 'cc'),
-                        hoverBackgroundColor: colors,
+                        backgroundColor: aspekColors.map(c => c + 'cc'),
+                        hoverBackgroundColor: aspekColors,
                         borderRadius: 12,
                         borderWidth: 0,
-                        barThickness: 30,
-                    }],
+                        barThickness: 30
+                    }]
                 },
                 options: {
                     responsive: true,
@@ -450,8 +445,8 @@
                             grid: { display: false },
                             ticks: { color: '#4b5563', font: { size: 11, weight: '600' } }
                         }
-                    },
-                },
+                    }
+                }
             });
         }
 
@@ -471,8 +466,8 @@
                         pointBorderColor: '#2ec4b6',
                         pointBorderWidth: 3,
                         pointRadius: 5,
-                        pointHoverRadius: 8,
-                    }],
+                        pointHoverRadius: 8
+                    }]
                 },
                 options: {
                     responsive: true,
@@ -482,7 +477,7 @@
                         tooltip: {
                             backgroundColor: '#1f2937',
                             padding: 12,
-                            cornerRadius: 12,
+                            cornerRadius: 12
                         }
                     },
                     scales: {
@@ -496,8 +491,8 @@
                             grid: { display: false },
                             ticks: { color: '#4b5563', font: { size: 11 } }
                         }
-                    },
-                },
+                    }
+                }
             });
         }
     })();

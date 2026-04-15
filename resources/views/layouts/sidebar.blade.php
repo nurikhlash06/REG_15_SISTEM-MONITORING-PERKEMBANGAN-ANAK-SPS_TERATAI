@@ -23,9 +23,13 @@
                href="{{ route('guru.dashboard') }}">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
-            <a class="nav-link {{ request()->routeIs('guru.murid*') ? 'active' : '' }}" 
+            <a class="nav-link {{ request()->routeIs('guru.murid*') ? 'active' : '' }}"
                href="{{ route('guru.murid.index') }}">
                 <i class="bi bi-people"></i> Data Murid
+            </a>
+            <a class="nav-link {{ request()->routeIs('guru.kelas*') ? 'active' : '' }}"
+               href="{{ route('guru.kelas.index') }}">
+                <i class="bi bi-grid-3x3-gap"></i> Data Kelas
             </a>
             <a class="nav-link {{ request()->routeIs('guru.orangtua*') ? 'active' : '' }}" 
                href="{{ route('guru.orangtua.index') }}">

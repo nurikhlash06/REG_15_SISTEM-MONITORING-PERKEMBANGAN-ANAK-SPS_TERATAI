@@ -4,18 +4,44 @@ namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
 use App\Models\Murid;
+use App\Models\Kelas;
 use App\Models\User;
+use App\Traits\HasAspekStyles;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Storage;
 
 class MuridController extends Controller
 {
-    public function index()
-    {
-        $murid = Murid::query()->with('orangTuaUser')->latest()->paginate(10);
+    use HasAspekStyles;
 
-        return view('guru.murid.index', compact('murid'));
+    public function index(Request $request)
+    {
+        $query = Murid::query()->with(['orangTuaUser', 'kelas']);
+
+        // Filter berdasarkan kelas jika ada parameter kelas
+        if ($request->has('kelas') && !empty($request->kelas)) {
+            $query->where('kelas_id', $request->kelas);
+        }
+
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nama_lengkap', 'like', "%{$search}%")
+                  ->orWhere('nik', 'like', "%{$search}%")
+                  ->orWhere('nisn', 'like', "%{$search}%");
+            });
+        }
+
+        $murid = $query->latest()->paginate(10)->withQueryString();
+        
+        // Ambil info kelas untuk header jika sedang difilter
+        $selectedKelas = null;
+        if ($request->has('kelas') && !empty($request->kelas)) {
+            $selectedKelas = Kelas::find($request->kelas);
+        }
+
+        return view('guru.murid.index', compact('murid', 'selectedKelas'));
     }
 
     public function create()
@@ -25,7 +51,9 @@ class MuridController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('guru.murid.create', compact('orangTuaUsers'));
+        $kelas = Kelas::where('status', 'aktif')->orderBy('nama_kelas')->get();
+
+        return view('guru.murid.create', compact('orangTuaUsers', 'kelas'));
     }
 
     public function store(Request $request)
@@ -36,14 +64,13 @@ class MuridController extends Controller
             'tanggal_lahir' => ['nullable', 'date'],
             'nik' => ['nullable', 'string', 'size:16'],
             'nisn' => ['nullable', 'string', 'size:10'],
-            'rombel' => ['nullable', 'string', 'max:255'],
+            'kelas_id' => ['nullable', 'exists:kelas,id'],
             'alamat' => ['nullable', 'string'],
             'berat_badan' => ['nullable', 'numeric', 'min:0'],
             'tinggi_badan' => ['nullable', 'numeric', 'min:0'],
-            'tinggi_lutut' => ['nullable', 'numeric', 'min:0'],
+            'lingkar_kepala' => ['nullable', 'numeric', 'min:0'],
             'nama_orang_tua' => ['required', 'string', 'max:255'],
             'email_orang_tua' => ['nullable', 'email', 'max:255'],
-            'password_orang_tua' => ['nullable', 'string', 'min:8'],
             'foto' => ['nullable', 'image', 'max:2048'],
         ]);
 
@@ -53,14 +80,20 @@ class MuridController extends Controller
 
         // Logic untuk otomatisasi akun orang tua
         if (!empty($data['email_orang_tua'])) {
-            $user = \App\Models\User::updateOrCreate(
-                ['email' => $data['email_orang_tua']],
-                [
+            $user = \App\Models\User::where('email', $data['email_orang_tua'])->first();
+            
+            if (!$user) {
+                $user = \App\Models\User::create([
+                    'email' => $data['email_orang_tua'],
                     'name' => $data['nama_orang_tua'],
-                    'password' => \Illuminate\Support\Facades\Hash::make($data['password_orang_tua'] ?? '12345678'),
+                    'password' => \Illuminate\Support\Facades\Hash::make('12345678'),
                     'role' => 'orang_tua'
-                ]
-            );
+                ]);
+            } else {
+                $user->update([
+                    'name' => $data['nama_orang_tua'],
+                ]);
+            }
             $data['id_user_orangtua'] = $user->id;
         }
 
@@ -75,7 +108,28 @@ class MuridController extends Controller
             $q->latest();
         }]);
 
-        return view('guru.murid.show', compact('murid'));
+        $aspekSummary = [];
+        $colorMap = $this->getColorMap();
+        $aspekOptions = array_keys($colorMap);
+        $dynamicStyles = $this->generateDynamicStyles($aspekOptions);
+        
+        foreach ($aspekOptions as $opt) {
+            $latest = $murid->perkembangan->where('aspek', $opt)->first();
+            $styles = $colorMap[$opt] ?? [
+                'bg' => 'secondary', 'icon' => 'bi-circle', 'text' => '#64748b',
+                'icon_bg' => '#f1f5f9', 'card_bg' => '#f8fafc'
+            ];
+
+            $aspekSummary[] = (object) [
+                'name' => $opt,
+                'skor' => $latest ? $latest->skor : 0,
+                'tanggal' => $latest ? $latest->tanggal : null,
+                'catatan' => $latest ? $latest->catatan : null,
+                'styles' => $styles,
+            ];
+        }
+
+        return view('guru.murid.show', compact('murid', 'aspekSummary', 'dynamicStyles'));
     }
 
     public function edit(Murid $murid)
@@ -85,7 +139,9 @@ class MuridController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('guru.murid.edit', compact('murid', 'orangTuaUsers'));
+        $kelas = Kelas::where('status', 'aktif')->orderBy('nama_kelas')->get();
+
+        return view('guru.murid.edit', compact('murid', 'orangTuaUsers', 'kelas'));
     }
 
     public function update(Request $request, Murid $murid)
@@ -96,14 +152,13 @@ class MuridController extends Controller
             'tanggal_lahir' => ['nullable', 'date'],
             'nik' => ['nullable', 'string', 'size:16'],
             'nisn' => ['nullable', 'string', 'size:10'],
-            'rombel' => ['nullable', 'string', 'max:255'],
+            'kelas_id' => ['nullable', 'exists:kelas,id'],
             'alamat' => ['nullable', 'string'],
             'berat_badan' => ['nullable', 'numeric', 'min:0'],
             'tinggi_badan' => ['nullable', 'numeric', 'min:0'],
-            'tinggi_lutut' => ['nullable', 'numeric', 'min:0'],
+            'lingkar_kepala' => ['nullable', 'numeric', 'min:0'],
             'nama_orang_tua' => ['required', 'string', 'max:255'],
             'email_orang_tua' => ['nullable', 'email', 'max:255'],
-            'password_orang_tua' => ['nullable', 'string', 'min:8'],
             'foto' => ['nullable', 'image', 'max:2048'],
         ]);
 
@@ -116,14 +171,20 @@ class MuridController extends Controller
 
         // Logic untuk otomatisasi akun orang tua
         if (!empty($data['email_orang_tua'])) {
-            $user = \App\Models\User::updateOrCreate(
-                ['email' => $data['email_orang_tua']],
-                [
+            $user = \App\Models\User::where('email', $data['email_orang_tua'])->first();
+            
+            if (!$user) {
+                $user = \App\Models\User::create([
+                    'email' => $data['email_orang_tua'],
                     'name' => $data['nama_orang_tua'],
-                    'password' => \Illuminate\Support\Facades\Hash::make($data['password_orang_tua'] ?? '12345678'),
+                    'password' => \Illuminate\Support\Facades\Hash::make('12345678'),
                     'role' => 'orang_tua'
-                ]
-            );
+                ]);
+            } else {
+                $user->update([
+                    'name' => $data['nama_orang_tua'],
+                ]);
+            }
             $data['id_user_orangtua'] = $user->id;
         }
 

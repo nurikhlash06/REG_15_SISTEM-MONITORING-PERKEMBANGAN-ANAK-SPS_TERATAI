@@ -3,27 +3,24 @@
 namespace App\Http\Controllers\Guru;
 
 use App\Http\Controllers\Controller;
+use App\Models\Kelas;
+use App\Traits\HasAspekStyles;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class DashboardController extends Controller
 {
+    use HasAspekStyles;
+
     public function index()
     {
         $user = Auth::user();
 
         $totalMurid = $this->safeCount(['murid']);
         
-        // Menghitung total kelas unik dari kolom 'rombel' di tabel murid
-        $totalKelas = 0;
-        if (Schema::hasTable('murid')) {
-            $totalKelas = DB::table('murid')
-                ->whereNotNull('rombel')
-                ->where('rombel', '!=', '')
-                ->distinct('rombel')
-                ->count('rombel');
-        }
+        // Menghitung total kelas dari tabel kelas
+        $totalKelas = Kelas::where('status', 'aktif')->count();
 
         $totalPerkembangan = 0;
         if (Schema::hasTable('perkembangan')) {
@@ -43,6 +40,10 @@ class DashboardController extends Controller
 
         // Data statistik fisik murid (Rata-rata)
         $fisikStats = $this->getFisikStats();
+        
+        // Generate dynamic styles
+        $aspekOptions = array_keys($this->getColorMap());
+        $dynamicStyles = $this->generateDynamicStyles($aspekOptions, 'aspek');
 
         return view('guru.dashboard', [
             'user' => $user,
@@ -57,6 +58,8 @@ class DashboardController extends Controller
             'recentActivities' => $recentActivities,
             'chartAspek' => $chartAspek,
             'chartBulanan' => $chartBulanan,
+            'dynamicStyles' => $dynamicStyles,
+            'colorMap' => $this->getColorMap(),
         ]);
     }
 
@@ -66,7 +69,7 @@ class DashboardController extends Controller
             return [
                 'avg_bb' => 0, 'count_bb' => 0,
                 'avg_tb' => 0, 'count_tb' => 0,
-                'avg_tl' => 0, 'count_tl' => 0
+                'avg_lk' => 0, 'count_lk' => 0
             ];
         }
 
@@ -77,8 +80,8 @@ class DashboardController extends Controller
             'avg_tb' => round(DB::table('murid')->where('tinggi_badan', '>', 0)->avg('tinggi_badan') ?? 0, 1),
             'count_tb' => DB::table('murid')->where('tinggi_badan', '>', 0)->count(),
             
-            'avg_tl' => round(DB::table('murid')->where('tinggi_lutut', '>', 0)->avg('tinggi_lutut') ?? 0, 1),
-            'count_tl' => DB::table('murid')->where('tinggi_lutut', '>', 0)->count(),
+            'avg_lk' => round(DB::table('murid')->where('lingkar_kepala', '>', 0)->avg('lingkar_kepala') ?? 0, 1),
+            'count_lk' => DB::table('murid')->where('lingkar_kepala', '>', 0)->count(),
         ];
     }
 
@@ -146,19 +149,13 @@ class DashboardController extends Controller
             return ['labels' => [], 'data' => []];
         }
 
-        $targetAspeks = [
-            'Nilai Agama/Moral',
-            'Fisik-Motorik',
-            'Kognitif',
-            'Bahasa',
-            'Sosial-Emosional',
-            'Seni'
-        ];
+        $targetAspeks = array_keys($this->getColorMap());
 
         $rows = DB::table('perkembangan')
             ->select('aspek', DB::raw('count(*) as total'))
             ->whereIn('aspek', $targetAspeks)
-            ->where('perkembangan.tanggal', '>=', now()->startOfMonth()) // Reset Bulanan (Hanya bulan ini)
+            ->whereYear('tanggal', now()->year)
+            ->whereMonth('tanggal', now()->month) // Selalu filter berdasarkan bulan berjalan
             ->groupBy('aspek')
             ->get()
             ->keyBy('aspek');

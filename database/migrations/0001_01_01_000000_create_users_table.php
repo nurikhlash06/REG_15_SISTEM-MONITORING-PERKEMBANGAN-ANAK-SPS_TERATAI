@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role', ['guru', 'orang_tua', 'admin'])->default('orang_tua');
+            $table->enum('role', ['guru', 'orang_tua',])->default('orang_tua');
             $table->unsignedBigInteger('guru_id')->nullable();
             $table->unsignedBigInteger('orang_tua_id')->nullable();
             $table->rememberToken();

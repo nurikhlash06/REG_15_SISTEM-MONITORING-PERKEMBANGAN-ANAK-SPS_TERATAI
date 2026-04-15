@@ -23,6 +23,8 @@
                 @include('guru.perkembangan._form', [
                     'murid' => $murid,
                     'selectedMuridId' => $selectedMuridId,
+                    'selectedAspek' => $selectedAspek,
+                    'perkembangan' => null,
                 ])
 
                 <div class="mt-4 d-flex gap-2">

@@ -15,10 +15,11 @@ class Murid extends Model
         'nik',
         'nisn',
         'rombel',
+        'kelas_id',
         'alamat',
         'berat_badan',
         'tinggi_badan',
-        'tinggi_lutut',
+        'lingkar_kepala',
         'foto',
         'id_user_orangtua',
         'nama_orang_tua',
@@ -40,6 +41,11 @@ class Murid extends Model
     public function perkembangan()
     {
         return $this->hasMany(Perkembangan::class, 'murid_id');
+    }
+
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class);
     }
 }
 

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Guru\UserOrangtuaController;
+use App\Http\Controllers\Guru\KelasController;
 use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
 use App\Http\Controllers\Guru\MuridController as GuruMuridController;
 use App\Http\Controllers\Guru\PerkembanganController as GuruPerkembanganController;
@@ -24,8 +25,9 @@ Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 Route::prefix('guru')->name('guru.')->middleware(['auth', 'guru'])->group(function () {
     Route::get('/dashboard', [GuruDashboardController::class, 'index'])->name('dashboard');
     Route::resource('murid', GuruMuridController::class);
+    Route::resource('kelas', KelasController::class)->parameters(['kelas' => 'kelas']);
     Route::resource('perkembangan', GuruPerkembanganController::class)->except(['show']);
-    Route::resource('orangtua', UserOrangtuaController::class)->only(['index', 'create', 'store', 'destroy']);
+    Route::resource('orangtua', UserOrangtuaController::class)->except(['show']);
 });
 
 // Orang Tua Routes

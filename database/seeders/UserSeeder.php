@@ -25,20 +25,13 @@ class UserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'guru@paud.com'],
             [
-                'name' => 'Demo Guru',
+                'name' => 'Guru',
                 'password' => Hash::make('password'),
                 'role' => 'guru',
             ]
+        
         );
 
-        User::updateOrCreate(
-            ['email' => 'orangtua@paud.com'],
-            [
-                'name' => 'Demo Orang Tua',
-                'password' => Hash::make('password'),
-                'role' => 'orang_tua',
-            ]
-        );
     }
 }
 

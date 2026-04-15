@@ -5,7 +5,7 @@
             <option value="">- pilih murid -</option>
             @foreach($murid as $m)
                 <option value="{{ $m->id }}"
-                    @selected((string) old('murid_id', $selectedMuridId ?? ($perkembangan->murid_id ?? '')) === (string) $m->id)
+                    @selected(old('murid_id', $selectedMuridId ?? (($perkembangan ?? null)?->murid_id ?? '')) == $m->id)
                 >
                     {{ $m->nama_lengkap }}
                 </option>
@@ -19,7 +19,7 @@
         <input
             type="date"
             name="tanggal"
-            value="{{ old('tanggal', isset($perkembangan?->tanggal) ? $perkembangan->tanggal->format('Y-m-d') : now()->format('Y-m-d')) }}"
+            value="{{ old('tanggal', ($perkembangan ?? null)?->tanggal?->format('Y-m-d') ?? now()->format('Y-m-d')) }}"
             class="form-control @error('tanggal') is-invalid @enderror"
             required
         >
@@ -30,18 +30,8 @@
         <label class="form-label">Aspek</label>
         <select name="aspek" class="form-select @error('aspek') is-invalid @enderror" required>
             <option value="">- pilih aspek -</option>
-            @php
-                $aspekOptions = [
-                    'Nilai Agama/Moral',
-                    'Fisik-Motorik',
-                    'Kognitif',
-                    'Bahasa',
-                    'Sosial-Emosional',
-                    'Seni'
-                ];
-            @endphp
             @foreach($aspekOptions as $opt)
-                <option value="{{ $opt }}" @selected(old('aspek', $perkembangan->aspek ?? '') === $opt)>
+                <option value="{{ $opt }}" @selected(old('aspek', ($perkembangan ?? null)?->aspek ?? ($selectedAspek ?? '')) === $opt)>
                     {{ $opt }}
                 </option>
             @endforeach
@@ -52,10 +42,10 @@
     <div class="col-md-3">
         <label class="form-label">Penilaian (Skor)</label>
         <select name="skor" class="form-select @error('skor') is-invalid @enderror" required>
-            <option value="1" @selected(old('skor', $perkembangan->skor ?? '') == 1)>BB (Belum Berkembang)</option>
-            <option value="2" @selected(old('skor', $perkembangan->skor ?? '') == 2)>MB (Mulai Berkembang)</option>
-            <option value="3" @selected(old('skor', $perkembangan->skor ?? '') == 3)>BSH (Berkembang Sesuai Harapan)</option>
-            <option value="4" @selected(old('skor', $perkembangan->skor ?? '') == 4)>BSB (Berkembang Sangat Baik)</option>
+            <option value="1" @selected(old('skor', ($perkembangan ?? null)?->skor ?? '') == 1)>BB (Belum Berkembang)</option>
+            <option value="2" @selected(old('skor', ($perkembangan ?? null)?->skor ?? '') == 2)>MB (Mulai Berkembang)</option>
+            <option value="3" @selected(old('skor', ($perkembangan ?? null)?->skor ?? '') == 3)>BSH (Berkembang Sesuai Harapan)</option>
+            <option value="4" @selected(old('skor', ($perkembangan ?? null)?->skor ?? '') == 4)>BSB (Berkembang Sangat Baik)</option>
         </select>
         @error('skor') <div class="invalid-feedback">{{ $message }}</div> @enderror
     </div>
@@ -67,7 +57,7 @@
             rows="5"
             class="form-control @error('catatan') is-invalid @enderror"
             required
-        >{{ old('catatan', $perkembangan->catatan ?? '') }}</textarea>
+        >{{ old('catatan', ($perkembangan ?? null)?->catatan ?? '') }}</textarea>
         @error('catatan') <div class="invalid-feedback">{{ $message }}</div> @enderror
     </div>
 </div>

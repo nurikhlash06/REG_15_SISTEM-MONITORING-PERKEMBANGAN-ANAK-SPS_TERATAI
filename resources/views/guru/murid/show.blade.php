@@ -6,7 +6,7 @@
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
         <div>
             <h3 class="mb-0">{{ $murid->nama_lengkap }}</h3>
-            <div class="text-muted">Detail data murid dan perkembangan terakhir.</div>
+            <div class="text-muted">Profil lengkap dan ringkasan perkembangan.</div>
         </div>
         <div class="d-flex gap-2">
             <a class="btn btn-outline-primary" href="{{ route('guru.murid.edit', $murid) }}">
@@ -51,13 +51,29 @@
                         <div class="col-5 text-muted small">NISN</div>
                         <div class="col-7 fw-semibold small">{{ $murid->nisn ?? '-' }}</div>
 
-                        <div class="col-5 text-muted small">Rombel / Kelas</div>
+                        <div class="col-5 text-muted small">Berat Badan</div>
+                        <div class="col-7 fw-semibold small">{{ $murid->berat_badan ? $murid->berat_badan . ' kg' : '-' }}</div>
+
+                        <div class="col-5 text-muted small">Tinggi Badan</div>
+                        <div class="col-7 fw-semibold small">{{ $murid->tinggi_badan ? $murid->tinggi_badan . ' cm' : '-' }}</div>
+
+                        <div class="col-5 text-muted small">Lingkar Kepala</div>
+                        <div class="col-7 fw-semibold small">{{ $murid->lingkar_kepala ? $murid->lingkar_kepala . ' cm' : '-' }}</div>
+
+                        <div class="col-5 text-muted small">Kelas</div>
                         <div class="col-7 fw-semibold small">
-                            <span class="badge bg-info bg-opacity-10 text-info border-0">{{ $murid->rombel ?? '-' }}</span>
+                            @if($murid->kelas)
+                                <span class="badge bg-primary bg-opacity-10 text-primary border-0">{{ $murid->kelas->nama_kelas }}</span>
+                            @else
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary border-0">-</span>
+                            @endif
                         </div>
 
                         <div class="col-5 text-muted small">Orang Tua</div>
                         <div class="col-7 fw-semibold small">{{ $murid->nama_orang_tua ?? '-' }}</div>
+
+                        <div class="col-5 text-muted small">Email Orang Tua</div>
+                        <div class="col-7 fw-semibold small">{{ $murid->email_orang_tua ?? '-' }}</div>
 
                         <div class="col-5 text-muted small">Alamat</div>
                         <div class="col-7 fw-semibold small text-wrap">{{ $murid->alamat ?? '-' }}</div>
@@ -67,9 +83,68 @@
         </div>
 
         <div class="col-lg-7">
+            <div class="card mb-3 border-0 shadow-sm" style="border-radius: 20px;">
+                <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h5 class="fw-bold text-dark mb-0" style="font-size: 1rem;"><i class="bi bi-grid-fill me-2 text-primary"></i>Status Capaian Semua Aspek</h5>
+                            <p class="text-muted mb-0 small">Ringkasan perkembangan terbaru</p>
+                        </div>
+                        <span class="badge bg-primary bg-opacity-10 text-primary border-0 rounded-pill px-3 py-2">
+                            {{ now()->translatedFormat('F Y') }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body px-4 pb-4">
+                    <div class="row g-3">
+                        @foreach($aspekSummary as $aspek)
+                            @php 
+                                $styles = $aspek->styles;
+                                $aspekClass = match(true) {
+                                    str_contains($aspek->name, 'Agama') => 'aspek-agama',
+                                    str_contains($aspek->name, 'Fisik') => 'aspek-fisik',
+                                    str_contains($aspek->name, 'Kognitif') => 'aspek-kognitif',
+                                    str_contains($aspek->name, 'Bahasa') => 'aspek-bahasa',
+                                    str_contains($aspek->name, 'Sosial') => 'aspek-sosial',
+                                    str_contains($aspek->name, 'Seni') => 'aspek-seni',
+                                    default => ''
+                                };
+                            @endphp
+                            <div class="col-md-6">
+                                <div class="card h-100 border-0 shadow-sm {{ $aspekClass }}" style="border-radius: 16px;">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="aspek-icon-box bg-aspek text-aspek">
+                                                    <i class="bi {{ $styles['icon'] }}" style="font-size: 0.9rem;"></i>
+                                                </div>
+                                                <span class="fw-bold text-dark" style="font-size: 0.75rem;">{{ $aspek->name }}</span>
+                                            </div>
+                                            @if($aspek->skor > 0)
+                                                <span class="badge rounded-pill border-0 px-2 py-1 fw-bold badge-aspek" style="font-size: 0.7rem;">
+                                                    {{ $aspek->skor }}
+                                                </span>
+                                            @endif
+                                        </div>
+                                        @if($aspek->catatan)
+                                            <div class="p-2 rounded-3 mb-1 bg-aspek">
+                                                <p class="text-dark mb-0" style="font-size: 0.7rem; line-height: 1.4;">{{ Str::limit($aspek->catatan, 80) }}</p>
+                                            </div>
+                                            <span class="text-muted" style="font-size: 0.65rem;"><i class="bi bi-calendar3 me-1"></i>{{ $aspek->tanggal?->format('d M Y') }}</span>
+                                        @else
+                                            <span class="text-muted" style="font-size: 0.7rem;">Belum ada catatan</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
-                    <div class="fw-semibold"><i class="bi bi-graph-up me-2"></i>Perkembangan Terbaru</div>
+                    <div class="fw-semibold"><i class="bi bi-graph-up me-2"></i>Riwayat Perkembangan</div>
                     <a class="btn btn-primary btn-sm" href="{{ route('guru.perkembangan.create', ['murid_id' => $murid->id]) }}">
                         <i class="bi bi-plus-circle me-2"></i>Tambah
                     </a>
