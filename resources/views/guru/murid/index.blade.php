@@ -64,11 +64,14 @@
                         @forelse($murid as $m)
                             <tr>
                                 <td style="width: 64px;">
-                                    @if($m->foto)
-                                        <img src="{{ asset('storage/'.$m->foto) }}" alt="Foto {{ $m->nama_lengkap }}" class="rounded-circle shadow-sm" style="width: 45px; height: 45px; object-fit: cover;">
+                                    @php
+                                        $fotoPath = $m->foto ? (str_starts_with($m->foto, 'http') ? $m->foto : asset('storage/' . $m->foto)) : null;
+                                    @endphp
+                                    @if($fotoPath)
+                                        <img src="{{ $fotoPath }}" alt="Foto {{ $m->nama_lengkap }}" class="rounded-circle shadow-sm" style="width: 50px; height: 50px; object-fit: cover; border: 2px solid white;">
                                     @else
-                                        <div class="rounded-circle bg-secondary bg-opacity-25 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
-                                            <i class="bi bi-person text-secondary fs-4"></i>
+                                        <div class="d-flex align-items-center justify-content-center bg-light rounded-circle" style="width: 50px; height: 50px; border: 1px dashed #ddd;">
+                                            <img src="{{ asset('images/logo-paud.png') }}" alt="Logo" style="width: 35px; height: 35px; object-fit: contain; opacity: 0.7;">
                                         </div>
                                     @endif
                                 </td>

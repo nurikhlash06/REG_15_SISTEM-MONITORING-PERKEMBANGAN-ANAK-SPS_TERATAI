@@ -102,24 +102,34 @@
         }
 
         .brand-logo {
-            margin-bottom: 24px;
+            margin-bottom: 32px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
         }
 
         .brand-logo img {
-            width: 50%; /* Diperbesar dari 50px */
-            height: 50%;
+            width: 140px; /* Diperbesar signifikan agar terlihat 'wah' */
+            height: 140px;
             object-fit: contain;
+            filter: drop-shadow(0 12px 24px rgba(0,0,0,0.12));
+            transition: transform 0.3s ease;
+        }
+
+        .brand-logo img:hover {
+            transform: scale(1.05);
         }
 
         .brand-name {
-            font-weight: 700;
-            font-size: 1.4rem; /* Diperbesar sedikit dari 1.25rem */
+            font-weight: 800;
+            font-size: 1.8rem; /* Diperbesar dari 1.6rem */
             color: var(--text-main);
             letter-spacing: -0.025em;
+            margin-top: 15px;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .login-card {

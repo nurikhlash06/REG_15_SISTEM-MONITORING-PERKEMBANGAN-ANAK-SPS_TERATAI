@@ -21,11 +21,14 @@
                     <div class="col-md-4" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);">
                         <div class="p-4 text-white text-center h-100 d-flex flex-column justify-content-center align-items-center">
                             <div class="position-relative mb-3">
-                                @if(!empty($selectedMurid->foto))
-                                    <img src="{{ asset('storage/'.$selectedMurid->foto) }}" alt="Foto" class="rounded-circle shadow" style="width: 120px; height: 120px; object-fit: cover; border: 4px solid rgba(255,255,255,0.2);">
+                                @php
+                                    $fotoPath = $selectedMurid->foto ? (str_starts_with($selectedMurid->foto, 'http') ? $selectedMurid->foto : asset('storage/' . $selectedMurid->foto)) : null;
+                                @endphp
+                                @if($fotoPath)
+                                    <img src="{{ $fotoPath }}" alt="Foto" class="rounded-circle shadow" style="width: 140px; height: 140px; object-fit: cover; border: 4px solid rgba(255,255,255,0.3);">
                                 @else
-                                    <div class="rounded-circle bg-white bg-opacity-10 d-flex align-items-center justify-content-center shadow" style="width: 120px; height: 120px; border: 4px solid rgba(255,255,255,0.2);">
-                                        <i class="bi bi-person text-white fs-1"></i>
+                                    <div class="d-flex align-items-center justify-content-center shadow-sm bg-white bg-opacity-20 rounded-circle" style="width: 140px; height: 140px; border: 2px dashed rgba(255,255,255,0.4);">
+                                        <img src="{{ asset('images/logo-paud.png') }}" alt="Logo" style="width: 110px; height: 110px; object-fit: contain;">
                                     </div>
                                 @endif
                             </div>

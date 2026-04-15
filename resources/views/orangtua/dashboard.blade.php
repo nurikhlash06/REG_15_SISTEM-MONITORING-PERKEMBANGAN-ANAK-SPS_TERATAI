@@ -86,11 +86,14 @@
                             <div class="card-body p-3">
                                 <div class="d-flex align-items-center gap-3">
                                     <div class="position-relative">
-                                        @if(!empty($a->foto))
-                                            <img src="{{ asset('storage/'.$a->foto) }}" alt="Foto" class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover; border: 2px solid #eee;">
+                                        @php
+                                            $fotoPath = $a->foto ? (str_starts_with($a->foto, 'http') ? $a->foto : asset('storage/' . $a->foto)) : null;
+                                        @endphp
+                                        @if($fotoPath)
+                                            <img src="{{ $fotoPath }}" alt="Foto" class="rounded-circle shadow-sm" style="width: 70px; height: 70px; object-fit: cover; border: 3px solid white;">
                                         @else
-                                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; border: 2px solid #eee;">
-                                                <i class="bi bi-person text-secondary fs-3"></i>
+                                            <div class="d-flex align-items-center justify-content-center bg-light rounded-circle" style="width: 70px; height: 70px; border: 2px dashed #ddd;">
+                                                <img src="{{ asset('images/logo-paud.png') }}" alt="Logo" style="width: 50px; height: 50px; object-fit: contain; opacity: 0.7;">
                                             </div>
                                         @endif
                                         <div class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle" style="width: 14px; height: 14px;"></div>

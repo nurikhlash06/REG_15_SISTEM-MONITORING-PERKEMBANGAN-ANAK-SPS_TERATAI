@@ -26,11 +26,14 @@
                 </div>
                 <div class="card-body">
                     <div class="d-flex align-items-center mb-3">
-                        @if($murid->foto)
-                            <img src="{{ asset('storage/'.$murid->foto) }}" alt="Foto {{ $murid->nama_lengkap }}" class="rounded-circle me-3" style="width: 72px; height: 72px; object-fit: cover;">
+                        @php
+                            $fotoPath = $murid->foto ? (str_starts_with($murid->foto, 'http') ? $murid->foto : asset('storage/' . $murid->foto)) : null;
+                        @endphp
+                        @if($fotoPath)
+                            <img src="{{ $fotoPath }}" alt="Foto {{ $murid->nama_lengkap }}" class="rounded-circle me-3 shadow-sm" style="width: 85px; height: 85px; object-fit: cover; border: 4px solid white;">
                         @else
-                            <div class="rounded-circle bg-secondary bg-opacity-25 d-flex align-items-center justify-content-center me-3" style="width: 72px; height: 72px;">
-                                <i class="bi bi-person text-secondary fs-3"></i>
+                            <div class="d-flex align-items-center justify-content-center me-3 bg-light rounded-circle shadow-sm" style="width: 85px; height: 85px; border: 2px dashed #ddd;">
+                                <img src="{{ asset('images/logo-paud.png') }}" alt="Logo" style="width: 60px; height: 60px; object-fit: contain; opacity: 0.8;">
                             </div>
                         @endif
                         <div>

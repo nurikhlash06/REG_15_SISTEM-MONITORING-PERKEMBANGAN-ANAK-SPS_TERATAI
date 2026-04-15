@@ -1,7 +1,14 @@
 <div class="col-md-3 col-lg-2 sidebar p-0">
     <div class="text-center py-4">
-        <h5 class="text-white mb-0">PAUD Teratai</h5>
-        <small class="text-white-50">Monitoring Perkembangan Anak</small>
+        <div class="mb-3 px-3">
+            <img src="{{ asset('images/logo-paud.png') }}" alt="Logo PAUD" style="width: 100px; height: 100px; object-fit: contain; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.2));">
+        </div>
+        <h5 class="text-white fw-bold mb-0" style="letter-spacing: 0.8px; font-size: 1.2rem;">PAUD Teratai</h5>
+        <div class="mt-1">
+            <span class="badge bg-white bg-opacity-10 text-white-50 fw-normal px-3 py-2 rounded-pill" style="font-size: 0.7rem; border: 1px solid rgba(255,255,255,0.1);">
+                Monitoring Perkembangan
+            </span>
+        </div>
     </div>
     
     <div class="px-3 mb-4">
