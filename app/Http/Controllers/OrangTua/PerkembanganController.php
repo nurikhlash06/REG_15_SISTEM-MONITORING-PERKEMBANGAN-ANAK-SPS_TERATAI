@@ -44,8 +44,10 @@ class PerkembanganController extends Controller
         $perkembangan = $perkembanganQuery->paginate(10)->withQueryString();
         $aspekOptions = array_keys($this->getColorMap());
         $colorMap = $this->getColorMap();
+        $skorLabels = $this->getSkorLabels();
+        $dynamicStyles = $this->generateDynamicStyles($aspekOptions, 'aspek');
 
-        return view('orangtua.perkembangan.index', compact('murid', 'perkembangan', 'selectedMuridId', 'selectedAspek', 'aspekOptions', 'colorMap'));
+        return view('orangtua.perkembangan.index', compact('murid', 'perkembangan', 'selectedMuridId', 'selectedAspek', 'aspekOptions', 'colorMap', 'skorLabels', 'dynamicStyles'));
     }
 
     public function show(Perkembangan $perkembangan)
@@ -61,8 +63,9 @@ class PerkembanganController extends Controller
         $aspekOptions = array_keys($this->getColorMap());
         $dynamicStyles = $this->generateDynamicStyles($aspekOptions, 'aspek');
         $colorMap = $this->getColorMap();
+        $skorLabels = $this->getSkorLabels();
 
-        return view('orangtua.perkembangan.show', compact('perkembangan', 'dynamicStyles', 'colorMap'));
+        return view('orangtua.perkembangan.show', compact('perkembangan', 'dynamicStyles', 'colorMap', 'skorLabels'));
     }
 }
 

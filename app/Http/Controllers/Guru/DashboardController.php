@@ -60,6 +60,7 @@ class DashboardController extends Controller
             'chartBulanan' => $chartBulanan,
             'dynamicStyles' => $dynamicStyles,
             'colorMap' => $this->getColorMap(),
+            'skorLabels' => $this->getSkorLabels(),
         ]);
     }
 

@@ -3,6 +3,9 @@
 @section('title', 'Detail Perkembangan')
 
 @section('content')
+    @if(isset($dynamicStyles))
+        <style><?php echo $dynamicStyles; ?></style>
+    @endif
     <div class="mb-4 d-flex align-items-center gap-3">
         <a href="{{ route('orangtua.perkembangan.index') }}" class="btn btn-sm btn-light rounded-circle p-2 shadow-sm">
             <i class="bi bi-arrow-left fs-5"></i>
@@ -19,19 +22,21 @@
                 </div>
                 <h4 class="fw-bold mb-1">{{ $perkembangan->aspek }}</h4>
                 <p class="text-muted small">Catatan untuk {{ $perkembangan->murid?->nama_lengkap ?? '-' }}</p>
+                
+                @if($perkembangan->skor && isset($skorLabels[$perkembangan->skor]))
+                    <div class="mb-3">
+                        <span class="badge rounded-pill px-3 py-2" style="background-color: <?php echo $skorLabels[$perkembangan->skor]['color']; ?>20; color: <?php echo $skorLabels[$perkembangan->skor]['color']; ?>; border: 1px solid <?php echo $skorLabels[$perkembangan->skor]['color']; ?>40;">
+                            {{ $skorLabels[$perkembangan->skor]['short'] }} - {{ $skorLabels[$perkembangan->skor]['full'] }}
+                        </span>
+                    </div>
+                @endif
+
                 <div class="d-flex justify-content-center mt-2">
                     @php 
-                        $aspekClass = match(true) {
-                            str_contains($perkembangan->aspek, 'Agama') => 'aspek-agama',
-                            str_contains($perkembangan->aspek, 'Fisik') => 'aspek-fisik',
-                            str_contains($perkembangan->aspek, 'Kognitif') => 'aspek-kognitif',
-                            str_contains($perkembangan->aspek, 'Bahasa') => 'aspek-bahasa',
-                            str_contains($perkembangan->aspek, 'Sosial') => 'aspek-sosial',
-                            str_contains($perkembangan->aspek, 'Seni') => 'aspek-seni',
-                            default => ''
-                        };
+                        $slug = \Illuminate\Support\Str::slug($perkembangan->aspek);
+                        $styles = $colorMap[$perkembangan->aspek] ?? null;
                     @endphp
-                    <div class="aspek-icon-box bg-aspek text-aspek {{ $aspekClass }}" 
+                    <div class="aspek-icon-box aspect-icon-<?php echo $slug; ?>" 
                          style="width: 50px; height: 50px;">
                         <i class="bi {{ $styles['icon'] ?? 'bi-pencil' }} fs-4"></i>
                     </div>

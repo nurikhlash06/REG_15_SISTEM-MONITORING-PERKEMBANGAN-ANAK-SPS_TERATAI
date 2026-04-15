@@ -79,8 +79,9 @@ class PerkembanganController extends Controller
         // Data pendukung untuk filter dropdown
         $murid = Murid::query()->orderBy('nama_lengkap')->get();
         $aspekOptions = array_keys($colorMap);
+        $skorLabels = $this->getSkorLabels();
 
-        return view('guru.perkembangan.index', compact('perkembangan', 'murid', 'aspekOptions', 'selectedMurid', 'aspekSummary', 'dynamicStyles'));
+        return view('guru.perkembangan.index', compact('perkembangan', 'murid', 'aspekOptions', 'selectedMurid', 'aspekSummary', 'dynamicStyles', 'skorLabels'));
     }
 
     public function create(Request $request)
@@ -89,9 +90,10 @@ class PerkembanganController extends Controller
         $selectedMuridId = $request->integer('murid_id') ?: null;
         $selectedAspek = $request->string('aspek') ?: null;
         $aspekOptions = array_keys($this->getColorMap());
+        $skorLabels = $this->getSkorLabels();
         $perkembangan = null;
 
-        return view('guru.perkembangan.create', compact('murid', 'selectedMuridId', 'selectedAspek', 'aspekOptions', 'perkembangan'));
+        return view('guru.perkembangan.create', compact('murid', 'selectedMuridId', 'selectedAspek', 'aspekOptions', 'skorLabels', 'perkembangan'));
     }
 
     public function store(Request $request)
@@ -115,8 +117,9 @@ class PerkembanganController extends Controller
     {
         $murid = Murid::query()->orderBy('nama_lengkap')->get();
         $aspekOptions = array_keys($this->getColorMap());
+        $skorLabels = $this->getSkorLabels();
 
-        return view('guru.perkembangan.edit', compact('perkembangan', 'murid', 'aspekOptions'));
+        return view('guru.perkembangan.edit', compact('perkembangan', 'murid', 'aspekOptions', 'skorLabels'));
     }
 
     public function update(Request $request, Perkembangan $perkembangan)

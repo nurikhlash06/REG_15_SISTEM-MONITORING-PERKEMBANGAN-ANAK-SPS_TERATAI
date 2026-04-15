@@ -39,10 +39,35 @@ trait HasAspekStyles
             ],
             'Seni' => [
                 'bg' => 'pink', 'icon' => 'bi-palette-fill', 'text' => '#d946ef',
-                'icon_bg' => 'linear-gradient(135deg, rgba(217, 70, 239, 0.25) 0%, rgba(168, 85, 247, 0.15) 100%)',
+                'icon_bg' => 'linear-gradient(135deg, rgba(217, 70, 239, 0.2) 0%, rgba(217, 70, 239, 0.05) 100%)',
                 'card_bg' => 'rgba(217, 70, 239, 0.05)'
             ],
         ];
+    }
+
+    /**
+     * Get the standard labels for scores 1-4.
+     */
+    protected function getSkorLabels(): array
+    {
+        return [
+            1 => ['short' => 'BB', 'full' => 'Belum Berkembang', 'color' => '#ef4444'],
+            2 => ['short' => 'MB', 'full' => 'Mulai Berkembang', 'color' => '#f59e0b'],
+            3 => ['short' => 'BSH', 'full' => 'Berkembang Sesuai Harapan', 'color' => '#10b981'],
+            4 => ['short' => 'BSB', 'full' => 'Berkembang Sangat Baik', 'color' => '#6366f1'],
+        ];
+    }
+
+    /**
+     * Get status label and color based on percentage.
+     */
+    protected function getStatusInfo(int $percent): array
+    {
+        if ($percent == 0) return ['label' => 'Belum Ada', 'color' => '#94a3b8', 'bg' => 'bg-secondary'];
+        if ($percent < 50) return ['label' => 'Perlu Perhatian', 'color' => '#ef4444', 'bg' => 'bg-danger'];
+        if ($percent <= 69) return ['label' => 'Perlu Stimulasi', 'color' => '#f59e0b', 'bg' => 'bg-warning'];
+        if ($percent <= 89) return ['label' => 'Baik', 'color' => '#10b981', 'bg' => 'bg-success'];
+        return ['label' => 'Sangat Baik', 'color' => '#6366f1', 'bg' => 'bg-primary'];
     }
 
     /**

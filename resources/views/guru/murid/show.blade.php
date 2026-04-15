@@ -3,6 +3,9 @@
 @section('title', 'Detail Murid')
 
 @section('content')
+    @if(isset($dynamicStyles))
+        <style><?php echo $dynamicStyles; ?></style>
+    @endif
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
         <div>
             <h3 class="mb-0">{{ $murid->nama_lengkap }}</h3>
@@ -103,34 +106,26 @@
                         @foreach($aspekSummary as $aspek)
                             @php 
                                 $styles = $aspek->styles;
-                                $aspekClass = match(true) {
-                                    str_contains($aspek->name, 'Agama') => 'aspek-agama',
-                                    str_contains($aspek->name, 'Fisik') => 'aspek-fisik',
-                                    str_contains($aspek->name, 'Kognitif') => 'aspek-kognitif',
-                                    str_contains($aspek->name, 'Bahasa') => 'aspek-bahasa',
-                                    str_contains($aspek->name, 'Sosial') => 'aspek-sosial',
-                                    str_contains($aspek->name, 'Seni') => 'aspek-seni',
-                                    default => ''
-                                };
+                                $slug = \Illuminate\Support\Str::slug($aspek->name);
                             @endphp
                             <div class="col-md-6">
-                                <div class="card h-100 border-0 shadow-sm {{ $aspekClass }}" style="border-radius: 16px;">
+                                <div class="card h-100 border-0 shadow-sm aspek-card-<?php echo $slug; ?>" style="border-radius: 16px;">
                                     <div class="card-body p-3">
                                         <div class="d-flex align-items-center justify-content-between mb-2">
                                             <div class="d-flex align-items-center gap-2">
-                                                <div class="aspek-icon-box bg-aspek text-aspek">
+                                                <div class="aspek-icon-box aspect-icon-<?php echo $slug; ?>">
                                                     <i class="bi {{ $styles['icon'] }}" style="font-size: 0.9rem;"></i>
                                                 </div>
                                                 <span class="fw-bold text-dark" style="font-size: 0.75rem;">{{ $aspek->name }}</span>
                                             </div>
-                                            @if($aspek->skor > 0)
-                                                <span class="badge rounded-pill border-0 px-2 py-1 fw-bold badge-aspek" style="font-size: 0.7rem;">
-                                                    {{ $aspek->skor }}
+                                            @if($aspek->skor > 0 && isset($skorLabels[$aspek->skor]))
+                                                <span class="badge rounded-pill border-0 px-2 py-1 fw-bold" style="font-size: 0.7rem; background-color: <?php echo $skorLabels[$aspek->skor]['color']; ?>20; color: <?php echo $skorLabels[$aspek->skor]['color']; ?>; border: 1px solid <?php echo $skorLabels[$aspek->skor]['color']; ?>40;">
+                                                    {{ $skorLabels[$aspek->skor]['short'] }}
                                                 </span>
                                             @endif
                                         </div>
                                         @if($aspek->catatan)
-                                            <div class="p-2 rounded-3 mb-1 bg-aspek">
+                                            <div class="p-2 rounded-3 mb-1" style="background-color: rgba(0,0,0,0.03);">
                                                 <p class="text-dark mb-0" style="font-size: 0.7rem; line-height: 1.4;">{{ Str::limit($aspek->catatan, 80) }}</p>
                                             </div>
                                             <span class="text-muted" style="font-size: 0.65rem;"><i class="bi bi-calendar3 me-1"></i>{{ $aspek->tanggal?->format('d M Y') }}</span>

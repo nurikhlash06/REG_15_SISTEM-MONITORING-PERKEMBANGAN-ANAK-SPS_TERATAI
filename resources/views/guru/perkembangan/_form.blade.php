@@ -42,10 +42,12 @@
     <div class="col-md-3">
         <label class="form-label">Penilaian (Skor)</label>
         <select name="skor" class="form-select @error('skor') is-invalid @enderror" required>
-            <option value="1" @selected(old('skor', ($perkembangan ?? null)?->skor ?? '') == 1)>BB (Belum Berkembang)</option>
-            <option value="2" @selected(old('skor', ($perkembangan ?? null)?->skor ?? '') == 2)>MB (Mulai Berkembang)</option>
-            <option value="3" @selected(old('skor', ($perkembangan ?? null)?->skor ?? '') == 3)>BSH (Berkembang Sesuai Harapan)</option>
-            <option value="4" @selected(old('skor', ($perkembangan ?? null)?->skor ?? '') == 4)>BSB (Berkembang Sangat Baik)</option>
+            <option value="">- pilih skor -</option>
+            @foreach($skorLabels as $val => $info)
+                <option value="{{ $val }}" @selected(old('skor', ($perkembangan ?? null)?->skor ?? '') == $val)>
+                    {{ $info['short'] }} ({{ $info['full'] }})
+                </option>
+            @endforeach
         </select>
         @error('skor') <div class="invalid-feedback">{{ $message }}</div> @enderror
     </div>

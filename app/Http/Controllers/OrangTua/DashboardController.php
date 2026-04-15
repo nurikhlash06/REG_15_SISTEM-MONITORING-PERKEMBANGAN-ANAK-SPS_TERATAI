@@ -110,25 +110,20 @@ class DashboardController extends Controller
                 $percent = 1;
             }
 
+            $statusInfo = $this->getStatusInfo($percent);
+
             $stats[] = (object) [
                 'name' => $aspek,
                 'count' => $rows->has($aspek) ? $rows[$aspek]->total : 0,
                 'percent' => $percent,
-                'status' => $this->getStatusLabel($percent),
+                'status' => $statusInfo['label'],
+                'status_color' => $statusInfo['color'],
+                'status_bg' => $statusInfo['bg'],
                 'styles' => $this->getColorMap()[$aspek] ?? [],
             ];
         }
 
         return $stats;
-    }
-
-    private function getStatusLabel(int $percent): string
-    {
-        if ($percent == 0) return 'Belum Ada';
-        if ($percent < 50) return 'Perlu Perhatian';
-        if ($percent <= 69) return 'Perlu Stimulasi';
-        if ($percent <= 89) return 'Baik';
-        return 'Sangat Baik';
     }
 
     private function anakCards(int $userId)

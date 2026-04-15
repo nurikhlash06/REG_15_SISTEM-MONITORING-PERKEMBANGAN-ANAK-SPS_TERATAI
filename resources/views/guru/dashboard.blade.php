@@ -3,6 +3,9 @@
 @section('title', 'Dashboard Guru')
 
 @section('content')
+    @if(isset($dynamicStyles))
+        <style><?php echo $dynamicStyles; ?></style>
+    @endif
     <!-- Greeting Section -->
     <div class="row mb-4">
         <div class="col-12">
@@ -243,7 +246,7 @@
         <div class="col-lg-5">
             <div class="card border-0 shadow-sm h-100" style="border-radius: 20px;">
                 <div class="card-header bg-white py-3 border-0">
-                    <h6 class="fw-bold text-dark mb-0"><i class="bi bi-clock-history me-2 text-info"></i>Aktivitas Terbaru</h6>
+                    <h6 class="fw-bold text-dark mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>Aktivitas Terbaru</h6>
                 </div>
                 <div class="card-body pt-0">
                     <div class="timeline-simple">
@@ -255,19 +258,9 @@
                                         'text' => '#64748b',
                                         'icon_bg' => 'rgba(0,0,0,0.05)'
                                     ];
+                                    $slug = \Illuminate\Support\Str::slug($activity->aspek);
                                 @endphp
-                                @php
-                                    $aspekClass = match(true) {
-                                        str_contains($activity->aspek, 'Agama') => 'aspek-agama',
-                                        str_contains($activity->aspek, 'Fisik') => 'aspek-fisik',
-                                        str_contains($activity->aspek, 'Kognitif') => 'aspek-kognitif',
-                                        str_contains($activity->aspek, 'Bahasa') => 'aspek-bahasa',
-                                        str_contains($activity->aspek, 'Sosial') => 'aspek-sosial',
-                                        str_contains($activity->aspek, 'Seni') => 'aspek-seni',
-                                        default => ''
-                                    };
-                                @endphp
-                                <div class="aspek-icon-box bg-aspek text-aspek flex-shrink-0 {{ $aspekClass }}" 
+                                <div class="aspek-icon-box aspect-icon-<?php echo $slug; ?> flex-shrink-0" 
                                      style="width: 40px; height: 40px;">
                                     <i class="bi {{ $styles['icon'] }}"></i>
                                 </div>
@@ -277,10 +270,17 @@
                                         <span class="text-muted" style="font-size: 0.7rem;">{{ \Carbon\Carbon::parse($activity->created_at)->diffForHumans() }}</span>
                                     </div>
                                     <p class="text-muted small mb-0">Update aspek <strong>{{ $activity->aspek }}</strong></p>
-                                    <div class="d-flex align-items-center gap-1 mt-1">
-                                        @for($i = 1; $i <= 4; $i++)
-                                            <i class="bi bi-star-fill" style="font-size: 0.6rem; color: {{ $i <= $activity->skor ? '#ffc107' : '#e9ecef' }}"></i>
-                                        @endfor
+                                    <div class="d-flex align-items-center gap-2 mt-1">
+                                        @if($activity->skor && isset($skorLabels[$activity->skor]))
+                                            <span class="badge rounded-pill px-2 py-0" style="font-size: 0.6rem; background-color: <?php echo $skorLabels[$activity->skor]['color']; ?>20; color: <?php echo $skorLabels[$activity->skor]['color']; ?>; border: 1px solid <?php echo $skorLabels[$activity->skor]['color']; ?>40;">
+                                                {{ $skorLabels[$activity->skor]['short'] }}
+                                            </span>
+                                        @endif
+                                        <div class="d-flex align-items-center gap-1">
+                                            @for($i = 1; $i <= 4; $i++)
+                                                <i class="bi bi-star-fill" style="font-size: 0.6rem; color: <?php echo $i <= $activity->skor ? '#ffc107' : '#e9ecef'; ?>;"></i>
+                                            @endfor
+                                        </div>
                                     </div>
                                 </div>
                             </div>

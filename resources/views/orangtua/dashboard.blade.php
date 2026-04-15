@@ -3,6 +3,9 @@
 @section('title', 'Dashboard Orang Tua')
 
 @section('content')
+    @if(isset($dynamicStyles))
+        <style><?php echo $dynamicStyles; ?></style>
+    @endif
     <!-- Welcome Header -->
     <div class="mb-4 d-flex align-items-center justify-content-between">
         <div>
@@ -224,22 +227,14 @@
                         <div class="row g-3">
                             @forelse($a->aspek_stats as $stat)
                                 @php
-                                    $aspekClass = match(true) {
-                                        str_contains($stat->name, 'Agama') => 'aspek-agama',
-                                        str_contains($stat->name, 'Fisik') => 'aspek-fisik',
-                                        str_contains($stat->name, 'Kognitif') => 'aspek-kognitif',
-                                        str_contains($stat->name, 'Bahasa') => 'aspek-bahasa',
-                                        str_contains($stat->name, 'Sosial') => 'aspek-sosial',
-                                        str_contains($stat->name, 'Seni') => 'aspek-seni',
-                                        default => ''
-                                    };
+                                    $slug = \Illuminate\Support\Str::slug($stat->name);
                                 @endphp
                                 <div class="col-6">
-                                    <div class="card border-0 shadow-sm h-100 {{ $aspekClass }}" style="border-radius: 20px; transition: transform 0.2s;">
+                                    <div class="card border-0 shadow-sm h-100 aspect-card-{{ $slug }}" style="border-radius: 20px; transition: transform 0.2s;">
                                         <a href="{{ route('orangtua.perkembangan.index', ['murid_id' => $a->id, 'aspek' => $stat->name]) }}" class="text-decoration-none h-100 d-flex flex-column">
                                             <div class="card-body p-3">
                                                 <div class="d-flex align-items-center gap-2 mb-2">
-                                                    <div class="aspek-icon-box bg-aspek text-aspek">
+                                                    <div class="aspek-icon-box aspect-icon-{{ $slug }}">
                                                         <i class="bi {{ $stat->styles['icon'] }}" style="font-size: 0.9rem;"></i>
                                                     </div>
                                                     <h6 class="fw-bold text-dark mb-0" style="font-size: 0.75rem;">{{ $stat->name }}</h6>
@@ -255,13 +250,13 @@
                                                         <span class="fw-bold text-dark" style="font-size: 1.1rem;">{{ $percentDisplay }}</span>
                                                         <span class="text-muted" style="font-size: 0.6rem;">Capaian</span>
                                                     </div>
-                                                    <div class="progress" style="height: 5px; border-radius: 10px; background: #f0f0f0;">
-                                                        <div class="progress-bar progress-aspek" role="progressbar" style="<?php echo $percentWidthStyle; ?>"></div>
+                                                    <div class="progress" style="height: 5px; border-radius: 10px; background: rgba(0,0,0,0.05);">
+                                                        <div class="progress-bar" role="progressbar" style="<?php echo $percentWidthStyle; ?>; background-color: <?php echo $stat->styles['text'] ?? ''; ?>;"></div>
                                                     </div>
                                                 </div>
 
                                                 <div class="d-flex align-items-center justify-content-between">
-                                                    <span class="badge rounded-pill badge-aspek" style="font-size: 0.6rem;">
+                                                    <span class="badge rounded-pill" style="font-size: 0.6rem; background-color: <?php echo $stat->status_color; ?>20; color: <?php echo $stat->status_color; ?>; border: 1px solid <?php echo $stat->status_color; ?>40;">
                                                         {{ $stat->status }}
                                                     </span>
                                                     <span class="text-muted" style="font-size: 0.6rem;">{{ $stat->count }} Lap.</span>

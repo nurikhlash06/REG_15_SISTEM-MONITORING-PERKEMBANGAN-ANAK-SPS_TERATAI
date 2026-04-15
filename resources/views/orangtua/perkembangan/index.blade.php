@@ -3,6 +3,9 @@
 @section('title', 'Perkembangan Anak')
 
 @section('content')
+    @if(isset($dynamicStyles))
+        <style><?php echo $dynamicStyles; ?></style>
+    @endif
     <div class="mb-4">
         <h4 class="fw-bold mb-1">Catatan Perkembangan 📚</h4>
         <p class="text-muted small">Lihat riwayat perkembangan anak Anda.</p>
@@ -48,21 +51,19 @@
     <div class="d-flex flex-column gap-3">
         @forelse($perkembangan as $p)
             @php 
-                $aspekClass = match(true) {
-                    str_contains($p->aspek, 'Agama') => 'aspek-agama',
-                    str_contains($p->aspek, 'Fisik') => 'aspek-fisik',
-                    str_contains($p->aspek, 'Kognitif') => 'aspek-kognitif',
-                    str_contains($p->aspek, 'Bahasa') => 'aspek-bahasa',
-                    str_contains($p->aspek, 'Sosial') => 'aspek-sosial',
-                    str_contains($p->aspek, 'Seni') => 'aspek-seni',
-                    default => ''
-                };
+                $slug = \Illuminate\Support\Str::slug($p->aspek);
             @endphp
-            <div class="card card-mobile p-3 border-start border-4 {{ $aspekClass }} border-aspek bg-aspek">
+            <div class="card card-mobile p-3 border-start border-4 aspek-card-<?php echo $slug; ?> border-aspek">
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <div>
                         <span class="badge bg-light text-dark border small mb-1">{{ $p->tanggal?->format('d M Y') ?? '-' }}</span>
-                        <h6 class="fw-bold mb-0 text-aspek">{{ $p->aspek }}</h6>
+                        <h6 class="fw-bold mb-0" style="color: <?php echo $colorMap[$p->aspek]['text'] ?? '#334155'; ?>;">{{ $p->aspek }}</h6>
+                        
+                        @if($p->skor && isset($skorLabels[$p->skor]))
+                            <span class="badge rounded-pill small mt-1" style="font-size: 0.65rem; background-color: <?php echo $skorLabels[$p->skor]['color']; ?>15; color: <?php echo $skorLabels[$p->skor]['color']; ?>; border: 1px solid <?php echo $skorLabels[$p->skor]['color']; ?>30;">
+                                {{ $skorLabels[$p->skor]['short'] }}
+                            </span>
+                        @endif
                     </div>
                     <a href="{{ route('orangtua.perkembangan.show', $p) }}" class="btn btn-sm btn-light rounded-pill px-3">
                         Detail <i class="bi bi-chevron-right ms-1 small"></i>

@@ -3,6 +3,9 @@
 @section('title', 'Perkembangan Anak')
 
 @section('content')
+    @if(isset($dynamicStyles))
+        <style><?php echo $dynamicStyles; ?></style>
+    @endif
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
         <div>
             <h3 class="mb-0">Perkembangan Anak</h3>
@@ -103,29 +106,21 @@
             @foreach($aspekSummary as $aspek)
                 @php 
                     $styles = $aspek->styles;
-                    $aspekClass = match(true) {
-                        str_contains($aspek->name, 'Agama') => 'aspek-agama',
-                        str_contains($aspek->name, 'Fisik') => 'aspek-fisik',
-                        str_contains($aspek->name, 'Kognitif') => 'aspek-kognitif',
-                        str_contains($aspek->name, 'Bahasa') => 'aspek-bahasa',
-                        str_contains($aspek->name, 'Sosial') => 'aspek-sosial',
-                        str_contains($aspek->name, 'Seni') => 'aspek-seni',
-                        default => ''
-                    };
+                    $slug = \Illuminate\Support\Str::slug($aspek->name);
                 @endphp
                 <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 border-0 shadow-sm {{ $aspekClass }}" style="border-radius: 20px;">
+                    <div class="card h-100 border-0 shadow-sm aspek-card-<?php echo $slug; ?>" style="border-radius: 20px;">
                         <div class="card-body p-4">
                             <div class="d-flex align-items-center justify-content-between mb-3">
                                 <div class="d-flex align-items-center gap-2">
-                                    <div class="aspek-icon-box bg-aspek text-aspek" style="width: 44px; height: 44px;">
+                                    <div class="aspek-icon-box aspect-icon-<?php echo $slug; ?>" style="width: 44px; height: 44px;">
                                         <i class="bi {{ $styles['icon'] }}"></i>
                                     </div>
                                     <h6 class="fw-bold text-dark mb-0" style="font-size: 0.85rem;">{{ $aspek->name }}</h6>
                                 </div>
-                                @if($aspek->skor > 0)
-                                    <span class="badge rounded-pill border-0 px-3 py-1 fw-bold badge-aspek" style="font-size: 0.75rem;">
-                                        {{ $aspek->skor }}
+                                @if($aspek->skor > 0 && isset($skorLabels[$aspek->skor]))
+                                    <span class="badge rounded-pill border-0 px-3 py-1 fw-bold" style="font-size: 0.75rem; background-color: <?php echo $skorLabels[$aspek->skor]['color']; ?>20; color: <?php echo $skorLabels[$aspek->skor]['color']; ?>; border: 1px solid <?php echo $skorLabels[$aspek->skor]['color']; ?>40;">
+                                        {{ $skorLabels[$aspek->skor]['short'] }}
                                     </span>
                                 @endif
                             </div>
@@ -221,6 +216,7 @@
                             <th class="text-nowrap">Tanggal</th>
                             <th>Murid</th>
                             <th>Aspek</th>
+                            <th>Capaian</th>
                             <th>Catatan</th>
                             <th class="text-end">Aksi</th>
                         </tr>
@@ -238,8 +234,17 @@
                                         -
                                     @endif
                                 </td>
-                                <td class="fw-semibold">{{ $p->aspek }}</td>
-                                <td class="text-truncate" style="max-width: 420px;">{{ $p->catatan }}</td>
+                                <td class="fw-semibold small">{{ $p->aspek }}</td>
+                                <td>
+                                    @if($p->skor && isset($skorLabels[$p->skor]))
+                                        <span class="badge rounded-pill px-3" style="background-color: <?php echo $skorLabels[$p->skor]['color']; ?>20; color: <?php echo $skorLabels[$p->skor]['color']; ?>; border: 1px solid <?php echo $skorLabels[$p->skor]['color']; ?>40; font-size: 0.75rem;">
+                                            {{ $skorLabels[$p->skor]['short'] }}
+                                        </span>
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td class="text-truncate" style="max-width: 320px;">{{ $p->catatan }}</td>
                                 <td class="text-end text-nowrap">
                                     <a class="btn btn-outline-primary btn-sm" href="{{ route('guru.perkembangan.edit', $p) }}">
                                         <i class="bi bi-pencil"></i>

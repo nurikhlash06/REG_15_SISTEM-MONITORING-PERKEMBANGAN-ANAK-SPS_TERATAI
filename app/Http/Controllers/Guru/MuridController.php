@@ -112,6 +112,7 @@ class MuridController extends Controller
         $colorMap = $this->getColorMap();
         $aspekOptions = array_keys($colorMap);
         $dynamicStyles = $this->generateDynamicStyles($aspekOptions);
+        $skorLabels = $this->getSkorLabels();
         
         foreach ($aspekOptions as $opt) {
             $latest = $murid->perkembangan->where('aspek', $opt)->first();
@@ -129,7 +130,7 @@ class MuridController extends Controller
             ];
         }
 
-        return view('guru.murid.show', compact('murid', 'aspekSummary', 'dynamicStyles'));
+        return view('guru.murid.show', compact('murid', 'aspekSummary', 'dynamicStyles', 'skorLabels'));
     }
 
     public function edit(Murid $murid)
