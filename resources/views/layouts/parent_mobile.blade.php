@@ -149,11 +149,11 @@
         .aspek-bahasa { --aspek-color: #9b59b6; --aspek-bg: rgba(155, 89, 182, 0.1); }
         /* Sosial-Emosional - Red/Pink */
         .aspek-sosial { --aspek-color: #e91e63; --aspek-bg: rgba(233, 30, 99, 0.1); }
-        /* Seni - Vibrant Pink/Purple Gradient */
+        /* Seni - Elegant Pink/Purple Gradient (Less Bright) */
         .aspek-seni { 
-            --aspek-color: #d946ef; 
-            --aspek-bg: rgba(217, 70, 239, 0.1);
-            --aspek-gradient: linear-gradient(135deg, #d946ef 0%, #6c5ce7 100%);
+            --aspek-color: #9d174d; 
+            --aspek-bg: rgba(157, 23, 77, 0.08);
+            --aspek-gradient: linear-gradient(135deg, #be185d 50%);
         }
 
         .bg-aspek { background-color: var(--aspek-bg) !important; }
@@ -162,12 +162,7 @@
         .progress-aspek { background-color: var(--aspek-color) !important; }
         .badge-aspek { background-color: var(--aspek-bg); color: var(--aspek-color); }
         
-        /* Special case for Seni gradient icons */
-        .aspek-seni .aspek-icon-box {
-            background: var(--aspek-gradient) !important;
-            color: white !important;
-        }
-        .aspek-seni .text-aspek { color: #d946ef !important; }
+        .aspek-seni .text-aspek { color: #be185d !important; }
 
         /* Chart adjustments for mobile */
         canvas {
