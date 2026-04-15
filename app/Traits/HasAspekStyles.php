@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use Illuminate\Support\Str;
+
 trait HasAspekStyles
 {
     /**
@@ -88,7 +90,7 @@ trait HasAspekStyles
                 'icon_bg' => '#f1f5f9', 'card_bg' => '#f8fafc'
             ];
             
-            $slug = \Illuminate\Support\Str::slug($opt);
+            $slug = Str::slug($opt);
             $dynamicStyles .= ".{$prefix}-icon-{$slug} { background: {$styles['icon_bg']} !important; color: {$styles['text']} !important; }";
             $dynamicStyles .= ".{$prefix}-card-{$slug} { background-color: {$styles['card_bg']} !important; }";
         }
