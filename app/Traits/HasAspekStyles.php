@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 trait HasAspekStyles
 {
     /**
-     * Get the color mapping and icons for development aspects.
+     * Mendapatkan pemetaan warna dan ikon untuk aspek perkembangan.
      *
      * @return array
      */
@@ -48,7 +48,7 @@ trait HasAspekStyles
     }
 
     /**
-     * Get the standard labels for scores 1-4.
+     * Mendapatkan label standar untuk skor penilaian 1-4 (BB, MB, BSH, BSB).
      */
     protected function getSkorLabels(): array
     {
@@ -61,7 +61,7 @@ trait HasAspekStyles
     }
 
     /**
-     * Get status label and color based on percentage.
+     * Mendapatkan label status dan warna berdasarkan persentase capaian.
      */
     protected function getStatusInfo(int $percent): array
     {
@@ -73,7 +73,7 @@ trait HasAspekStyles
     }
 
     /**
-     * Get CSS dynamic styles for aspects.
+     * Menghasilkan gaya CSS dinamis untuk tampilan ikon dan kartu aspek.
      *
      * @param array $aspekOptions
      * @param string $prefix
