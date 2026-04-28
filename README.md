@@ -1,6 +1,6 @@
 # SPS Teratai - Sistem Monitoring Perkembangan Anak
 
-Sistem informasi berbasis web yang dirancang khusus untuk mempermudah guru dan orang tua dalam memantau tumbuh kembang anak secara profesional, bersih, dan modern.
+Sistem informasi berbasis web yang dirancang khusus untuk mempermudah guru dan orang tua dalam memantau tumbuh kembang anak secara profesional, dan modern.
 
 ## Fitur Utama
 
