@@ -1,0 +1,212 @@
+<?php
+
+namespace App\Http\Controllers\OrangTua;
+
+use App\Http\Controllers\Controller;
+use App\Traits\HasAspekStyles;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+class DashboardController extends Controller
+{
+    use HasAspekStyles;
+
+    public function index()
+    {
+        $user = Auth::user();
+
+        $totalAnak = 0;
+        if (Schema::hasTable('murid') && Schema::hasColumn('murid', 'id_user_orangtua')) {
+            $totalAnak = (int) DB::table('murid')->where('id_user_orangtua', $user->id)->count();
+        }
+
+        $anak = $this->anakCards($user->id);
+        $chartPerBulan = $this->perkembanganBulananChart($user->id);
+
+        // Hitung statistik aspek per anak
+        foreach ($anak as $a) {
+            $a->aspek_stats = $this->aspekStatsPerAnak($a->id);
+        }
+
+        // Generate dynamic styles once for all aspects
+        $dynamicStyles = $this->generateDynamicStyles(array_keys($this->getColorMap()), 'aspect');
+
+        // Fitur Tambahan: Tips Parenting Harian
+        $dailyTip = $this->getDailyTip();
+
+        return view('orangtua.dashboard', [
+            'user' => $user,
+            'stats' => [
+                'total_anak' => $totalAnak,
+            ],
+            'anak' => $anak,
+            'chartPerBulan' => $chartPerBulan,
+            'dailyTip' => $dailyTip,
+            'dynamicStyles' => $dynamicStyles,
+        ]);
+    }
+
+    private function getDailyTip(): array
+    {
+        $tips = [
+            [
+                'title' => 'Membaca Buku',
+                'content' => 'Membacakan buku sebelum tidur dapat meningkatkan kemampuan bahasa dan imajinasi anak.',
+                'icon' => '📖'
+            ],
+            [
+                'title' => 'Apresiasi Kecil',
+                'content' => 'Berikan pujian yang spesifik saat anak melakukan hal baik, seperti "Hebat, kamu sudah merapikan mainan!".',
+                'icon' => '🌟'
+            ],
+            [
+                'title' => 'Waktu Istirahat',
+                'content' => 'Tidur siang yang cukup membantu anak lebih fokus dan tidak mudah rewel di sore hari.',
+                'icon' => '💤'
+            ]
+        ];
+
+        // Pilih tip berdasarkan hari dalam setahun agar berganti setiap hari
+        $index = (int) date('z') % count($tips);
+        return $tips[$index];
+    }
+
+    private function aspekStatsPerAnak(int $muridId): array
+    {
+        if (! Schema::hasTable('murid') || ! Schema::hasTable('perkembangan')) {
+            return [];
+        }
+
+        $targetAspeks = [
+            'Nilai Agama dan Budi Pekerti',
+            'Jati Diri',
+            'Dasar dasar Literasi, Matematika, sains teknologi, rekayasa dan seni'
+        ];
+
+        // Ambil rata-rata skor per aspek untuk anak spesifik ini
+        $rows = DB::table('perkembangan')
+            ->where('murid_id', $muridId)
+            ->whereIn('aspek', $targetAspeks)
+            ->where('tanggal', '>=', now()->startOfMonth()) // Hanya data bulan ini
+            ->select(
+                'aspek',
+                DB::raw('count(id) as total'),
+                DB::raw('avg(skor) as rata_skor')
+            )
+            ->groupBy('aspek')
+            ->get()
+            ->keyBy('aspek');
+
+        $stats = [];
+        foreach ($targetAspeks as $aspek) {
+            $avg = $rows->has($aspek) ? (float) $rows[$aspek]->rata_skor : 0;
+            $percent = $avg > 0 ? round(($avg / 4) * 100) : 0;
+
+            if ($percent == 0 && ($rows->has($aspek) && $rows[$aspek]->total > 0)) {
+                $percent = 1;
+            }
+
+            $statusInfo = $this->getStatusInfo($percent);
+
+            $stats[] = (object) [
+                'name' => $aspek,
+                'count' => $rows->has($aspek) ? $rows[$aspek]->total : 0,
+                'percent' => $percent,
+                'status' => $statusInfo['label'],
+                'status_color' => $statusInfo['color'],
+                'status_bg' => $statusInfo['bg'],
+                'styles' => $this->getColorMap()[$aspek] ?? [],
+            ];
+        }
+
+        return $stats;
+    }
+
+    private function anakCards(int $userId)
+    {
+        if (! Schema::hasTable('murid')) {
+            return collect();
+        }
+
+        $anak = DB::table('murid')
+            ->leftJoin('perkembangan', function ($join) {
+                $join->on('perkembangan.murid_id', '=', 'murid.id')
+                    ->whereMonth('perkembangan.tanggal', now()->month)
+                    ->whereYear('perkembangan.tanggal', now()->year);
+            })
+            ->leftJoin('kelas', 'murid.kelas_id', '=', 'kelas.id')
+            ->where('murid.id_user_orangtua', $userId)
+            ->select(
+                'murid.id',
+                'murid.nama_lengkap',
+                'murid.foto',
+                'murid.nama_orang_tua',
+                'murid.email_orang_tua',
+                'murid.berat_badan',
+                'murid.tinggi_badan',
+                'murid.lingkar_kepala',
+                'kelas.nama_kelas',
+                'kelas.kode_kelas',
+                DB::raw('count(perkembangan.id) as total_perkembangan')
+            )
+            ->groupBy('murid.id', 'murid.nama_lengkap', 'murid.foto', 'murid.nama_orang_tua', 'murid.email_orang_tua', 'murid.berat_badan', 'murid.tinggi_badan', 'murid.lingkar_kepala', 'kelas.nama_kelas', 'kelas.kode_kelas')
+            ->orderBy('murid.nama_lengkap')
+            ->get();
+
+        // Cari capaian terbaik untuk masing-masing anak
+        foreach ($anak as $a) {
+            $bestAspek = DB::table('perkembangan')
+                ->where('murid_id', $a->id)
+                ->whereMonth('tanggal', now()->month)
+                ->whereYear('tanggal', now()->year)
+                ->orderBy('skor', 'DESC')
+                ->first();
+            
+            $a->best_aspek = $bestAspek ? $bestAspek->aspek : null;
+            $a->best_skor = $bestAspek ? $bestAspek->skor : null;
+        }
+
+        return $anak;
+    }
+
+    /**
+     * Grafik perkembangan per bulan (hingga 6 bulan ke belakang)
+     * untuk seluruh anak yang dimiliki orang tua ini.
+     */
+    private function perkembanganBulananChart(int $userId): array
+    {
+        if (! Schema::hasTable('murid') || ! Schema::hasTable('perkembangan')) {
+            return ['labels' => [], 'data' => []];
+        }
+
+        $rows = DB::table('murid')
+            ->leftJoin('perkembangan', 'perkembangan.murid_id', '=', 'murid.id')
+            ->where('murid.id_user_orangtua', $userId)
+            ->whereNotNull('perkembangan.tanggal')
+            ->where('perkembangan.tanggal', '>=', now()->subMonths(5)->startOfMonth())
+            ->select(
+                DB::raw("DATE_FORMAT(perkembangan.tanggal, '%Y-%m') as bulan"),
+                DB::raw('count(perkembangan.id) as total')
+            )
+            ->groupBy('bulan')
+            ->orderBy('bulan')
+            ->get();
+
+        $labels = [];
+        $data = [];
+        
+        for ($i = 5; $i >= 0; $i--) {
+            $date = now()->subMonths($i);
+            $monthKey = $date->format('Y-m');
+            $labels[] = $date->translatedFormat('M'); // Contoh: Jan, Feb, Mar
+            $data[] = $rows->where('bulan', $monthKey)->first()->total ?? 0;
+        }
+
+        return [
+            'labels' => $labels,
+            'data' => $data,
+        ];
+    }
+}
+
