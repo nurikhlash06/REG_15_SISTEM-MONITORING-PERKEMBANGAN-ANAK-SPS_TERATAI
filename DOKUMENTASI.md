@@ -10,80 +10,74 @@ Sistem ini membantu guru dalam mencatat dan mengelola data perkembangan anak, se
 
 ## SOFTWARE REQUIREMENTS SPECIFICATION (SRS)
 
-### 1. TUJUAN PROYEK
-- Memudahkan guru dalam mencatat dan mengelola data perkembangan anak PAUD.
-- Memberikan akses kepada orang tua untuk melihat perkembangan anak secara transparan.
-- Menyediakan laporan perkembangan yang terstruktur dan mudah dipahami.
+## Kebutuhan Fungsional Sistem
 
-### 2. PENGGUNA SISTEM
-1. **Guru**: Pengguna utama yang mengelola semua data dan mencatat perkembangan anak.
-2. **Orang Tua**: Pengguna yang melihat laporan perkembangan anak mereka.
+| SRS | DESKRIPSI |
+|-----|-----------|
+| **GURU** | |
+| **1. Kelola Auth** | |
+| SRS-F-001 | Sistem dapat melakukan proses login guru |
+| SRS-F-002 | Sistem dapat menampilkan halaman dashboard guru |
+| SRS-F-003 | Sistem dapat melakukan proses logout |
+| **2. Kelola Murid** | |
+| SRS-F-004 | Sistem dapat menambah data murid |
+| SRS-F-005 | Sistem dapat mengedit data murid |
+| SRS-F-006 | Sistem dapat menghapus data murid |
+| SRS-F-007 | Sistem dapat menampilkan detail profil murid |
+| **3. Kelola Kelas** | |
+| SRS-F-008 | Sistem dapat menambah data kelas |
+| SRS-F-009 | Sistem dapat mengedit data kelas |
+| SRS-F-010 | Sistem dapat menghapus data kelas |
+| **4. Kelola Perkembangan** | |
+| SRS-F-011 | Sistem dapat menambah catatan perkembangan |
+| SRS-F-012 | Sistem dapat mengedit catatan perkembangan |
+| SRS-F-013 | Sistem dapat menghapus catatan perkembangan |
+| **5. Kelola Capaian Perkembangan** | |
+| SRS-F-014 | Sistem dapat menampilkan capaian perkembangan murid |
+| SRS-F-015 | Sistem dapat menghapus riwayat perkembangan satu per satu |
+| SRS-F-016 | Sistem dapat menghapus riwayat perkembangan satu bulan sekaligus |
+| SRS-F-017 | Sistem dapat menampilkan pagination riwayat perkembangan |
+| **6. Kelola Akun Orang Tua** | |
+| SRS-F-018 | Sistem dapat menambah akun orang tua |
+| SRS-F-019 | Sistem dapat mengedit akun orang tua |
+| SRS-F-020 | Sistem dapat menghapus akun orang tua |
+| **ORANG TUA** | |
+| **1. Kelola Auth** | |
+| SRS-F-021 | Sistem dapat melakukan proses login orang tua |
+| SRS-F-022 | Sistem dapat menampilkan halaman dashboard orang tua |
+| SRS-F-023 | Sistem dapat melakukan proses logout |
+| **2. Lihat Perkembangan** | |
+| SRS-F-024 | Sistem dapat menampilkan profil anak di dashboard |
+| SRS-F-025 | Sistem dapat menampilkan grafik aktivitas belajar 6 bulan terakhir |
+| SRS-F-026 | Sistem dapat menampilkan target perkembangan sesuai usia |
+| SRS-F-027 | Sistem dapat menampilkan perhitungan nilai perkembangan |
+| SRS-F-028 | Sistem dapat menampilkan semua laporan perkembangan anak |
+| SRS-F-029 | Sistem dapat menampilkan detail laporan perkembangan |
 
----
+## Kebutuhan Non Fungsional
 
-## 3. KEBUTUHAN FUNGSIONAL
-
-### 3.1 Fitur untuk Guru
-
-| No | Fitur | Deskripsi |
-|----|-------|-----------|
-| 1 | **Login & Logout** | Guru dapat login ke sistem dan logout dengan aman. |
-| 2 | **Dashboard Guru** | Menampilkan ringkasan statistik total murid, total rombel, dan catatan perkembangan bulan ini. |
-| 3 | **Manajemen Murid** | - Menambah, mengedit, dan menghapus data murid. <br> - Menyimpan foto profil murid. <br> - Menyimpan data fisik murid (berat badan, tinggi badan, lingkar kepala). <br> - Melihat detail profil murid. |
-| 4 | **Manajemen Kelas** | - Menambah, mengedit, dan menghapus rombongan belajar (rombel). <br> - Menetapkan tingkat kelompok usia (A, B, C). |
-| 5 | **Manajemen Perkembangan** | - Menambah, mengedit, dan menghapus catatan perkembangan anak. <br> - Memilih aspek perkembangan dan skor penilaian. <br> - Menyimpan catatan tambahan. |
-| 6 | **Capaian Perkembangan** | - Melihat capaian perkembangan masing-masing anak secara detail. <br> - Melihat perhitungan nilai otomatis. <br> - Melihat riwayat perkembangan per bulan. <br> - Menghapus riwayat perkembangan satu per satu atau satu bulan sekaligus. <br> - Pagination untuk riwayat perkembangan yang panjang. |
-| 7 | **Manajemen Akun Orang Tua** | - Menambah, mengedit, dan menghapus akun orang tua. <br> - Menghubungkan akun orang tua dengan data murid. |
-
-### 3.2 Fitur untuk Orang Tua
-
-| No | Fitur | Deskripsi |
-|----|-------|-----------|
-| 1 | **Login & Logout** | Orang tua dapat login ke sistem dan logout dengan aman. |
-| 2 | **Dashboard Orang Tua** | - Menampilkan profil anak dengan target pencapaian. <br> - Menampilkan grafik aktivitas belajar 6 bulan terakhir. <br> - Menampilkan target perkembangan sesuai usia (accordion). <br> - Menampilkan perhitungan nilai lengkap. |
-| 3 | **Lihat Perkembangan** | - Melihat semua laporan perkembangan anak. <br> - Melihat detail laporan perkembangan. |
-
----
-
-## 4. KEBUTUHAN NON-FUNGSIONAL
-
-### 4.1 Kinerja (Performance)
-- Sistem harus dapat menampilkan halaman dalam waktu kurang dari 3 detik.
-- Sistem harus menangani setidaknya 50 pengguna bersamaan tanpa penurunan kinerja yang signifikan.
-
-### 4.2 Keandalan (Reliability)
-- Sistem harus memiliki uptime minimal 99% selama jam operasional.
-- Sistem harus dapat memulihkan data jika terjadi kesalahan.
-
-### 4.3 Kegunaan (Usability)
-- Antarmuka harus intuitif dan mudah dipahami oleh pengguna tanpa pelatihan khusus.
-- Navigasi harus jelas dan mudah diakses dari setiap halaman.
-- Warna dan layout harus konsisten di seluruh halaman.
-
-### 4.4 Keamanan (Security)
-- Sistem harus menggunakan autentikasi login dengan password terenkripsi.
-- Hanya pengguna yang terotorisasi yang dapat mengakses fitur sesuai peran (guru/orang tua).
-- Sistem harus melindungi data sensitif murid dan orang tua.
-
-### 4.5 Portabilitas (Portability)
-- Sistem harus dapat diakses melalui browser modern (Chrome, Firefox, Safari, Edge).
-- Sistem harus responsive dan dapat diakses dari perangkat desktop, tablet, dan smartphone.
-
-### 4.6 Maintainability
-- Kode harus terstruktur dan mudah dipahami.
-- Dokumentasi harus lengkap dan jelas.
+| SRS | DESKRIPSI |
+|-----|-----------|
+| SRS-NF-001 | Sistem dirancang menggunakan bahasa pemrograman PHP dan Framework Laravel 12.x |
+| SRS-NF-002 | Sistem mampu memproses input dan menampilkan halaman dalam waktu ≤ 3 detik |
+| SRS-NF-003 | Sistem berbasis web dan dapat diakses melalui browser modern (Chrome, Firefox, Safari, Edge) |
+| SRS-NF-004 | Sistem website dapat berjalan pada perangkat desktop, laptop, dan smartphone |
+| SRS-NF-005 | Sistem harus memiliki antarmuka sederhana yang mudah digunakan oleh guru dan orang tua |
+| SRS-NF-006 | Sistem harus memiliki uptime minimal 99% selama jam operasional |
+| SRS-NF-007 | Sistem harus menggunakan autentikasi login dengan password terenkripsi |
+| SRS-NF-008 | Sistem harus responsive dan menyesuaikan tampilan sesuai ukuran layar perangkat |
 
 ---
 
-## 5. DESAIN SISTEM
+## DESAIN SISTEM
 
-### 5.1 Arsitektur Teknologi
+### Arsitektur Teknologi
 - **Backend**: PHP 8.2+ dengan Laravel 12.x
 - **Frontend**: Bootstrap 5, Bootstrap Icons, Chart.js
 - **Database**: MySQL
 - **Server**: Apache/Nginx
 
-### 5.2 Struktur Database
+### Struktur Database
 
 #### Tabel `users`
 - Menyimpan data pengguna (guru dan orang tua)
@@ -101,12 +95,12 @@ Sistem ini membantu guru dalam mencatat dan mengelola data perkembangan anak, se
 - Menyimpan data perkembangan anak
 - Kolom: id, murid_id, tanggal, aspek, skor, catatan, is_read, created_at, updated_at
 
-### 5.3 Aspek Penilaian
+### Aspek Penilaian
 1. **Agama & Moral** (Bobot: 21)
 2. **Perkembangan Fisik** (Bobot: 6)
 3. **Program Literasi & Sains** (Bobot: 70)
 
-### 5.4 Skala Penilaian
+### Skala Penilaian
 | Kode | Keterangan | Persentase |
 |------|------------|------------|
 | BM | Belum Muncul | 0% |
@@ -114,7 +108,7 @@ Sistem ini membantu guru dalam mencatat dan mengelola data perkembangan anak, se
 | SM | Sering Muncul | 75% |
 | K | Konsisten | 100% |
 
-### 5.5 Target Perkembangan
+### Target Perkembangan
 | Kelompok | Usia | Target |
 |----------|------|--------|
 | A | 2 - <4 tahun | ≥75% |
@@ -123,7 +117,7 @@ Sistem ini membantu guru dalam mencatat dan mengelola data perkembangan anak, se
 
 ---
 
-## 6. INSTALASI DAN KONFIGURASI
+## INSTALASI DAN KONFIGURASI
 
 1. Clone repositori ini.
 2. Jalankan `composer install` untuk menginstal dependensi PHP.
@@ -137,6 +131,6 @@ Sistem ini membantu guru dalam mencatat dan mengelola data perkembangan anak, se
 
 ---
 
-## 7. LISENSI
+## LISENSI
 
 Project ini dikembangkan untuk tujuan pendidikan dan monitoring perkembangan anak.
