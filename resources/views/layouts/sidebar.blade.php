@@ -46,6 +46,10 @@
                href="{{ route('guru.perkembangan.index') }}">
                 <i class="bi bi-graph-up"></i> Perkembangan Anak
             </a>
+            <a class="nav-link {{ request()->routeIs('guru.capaian-perkembangan*') ? 'active' : '' }}" 
+               href="{{ route('guru.capaian-perkembangan.index') }}">
+                <i class="bi bi-check-circle"></i> Capaian Perkembangan
+            </a>
         @else
             <a class="nav-link {{ request()->routeIs('orangtua.dashboard') ? 'active' : '' }}" 
                href="{{ route('orangtua.dashboard') }}">

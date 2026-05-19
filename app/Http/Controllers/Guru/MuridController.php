@@ -109,9 +109,10 @@ class MuridController extends Controller
         }]);
 
         $aspekSummary = [];
+        $bagianPenilaian = $this->getBagianPenilaian();
         $colorMap = $this->getColorMap();
-        $aspekOptions = array_keys($colorMap);
-        $dynamicStyles = $this->generateDynamicStyles($aspekOptions);
+        $aspekOptions = array_keys($bagianPenilaian);
+        $dynamicStyles = '';
         $skorLabels = $this->getSkorLabels();
         
         foreach ($aspekOptions as $opt) {
@@ -123,7 +124,7 @@ class MuridController extends Controller
 
             $aspekSummary[] = (object) [
                 'name' => $opt,
-                'skor' => $latest ? $latest->skor : 0,
+                'skor' => $latest ? $latest->skor : null,
                 'tanggal' => $latest ? $latest->tanggal : null,
                 'catatan' => $latest ? $latest->catatan : null,
                 'styles' => $styles,

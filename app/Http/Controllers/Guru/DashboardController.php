@@ -42,8 +42,10 @@ class DashboardController extends Controller
         $fisikStats = $this->getFisikStats();
         
         // Generate dynamic styles
-        $aspekOptions = array_keys($this->getColorMap());
-        $dynamicStyles = $this->generateDynamicStyles($aspekOptions, 'aspek');
+        $dynamicStyles = '';
+
+        $bagianPenilaian = $this->getBagianPenilaian();
+        $kodePenilaian = $this->getKodePenilaian();
 
         return view('guru.dashboard', [
             'user' => $user,
@@ -59,8 +61,8 @@ class DashboardController extends Controller
             'chartAspek' => $chartAspek,
             'chartBulanan' => $chartBulanan,
             'dynamicStyles' => $dynamicStyles,
-            'colorMap' => $this->getColorMap(),
-            'skorLabels' => $this->getSkorLabels(),
+            'bagianPenilaian' => $bagianPenilaian,
+            'kodePenilaian' => $kodePenilaian,
         ]);
     }
 
@@ -150,7 +152,8 @@ class DashboardController extends Controller
             return ['labels' => [], 'data' => []];
         }
 
-        $targetAspeks = array_keys($this->getColorMap());
+        $bagianPenilaian = $this->getBagianPenilaian();
+        $targetAspeks = array_keys($bagianPenilaian);
 
         $rows = DB::table('perkembangan')
             ->select('aspek', DB::raw('count(*) as total'))

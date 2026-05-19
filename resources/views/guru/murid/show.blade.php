@@ -118,7 +118,7 @@
                                                 </div>
                                                 <span class="fw-bold text-dark" style="font-size: 0.75rem;">{{ $aspek->name }}</span>
                                             </div>
-                                            @if($aspek->skor > 0 && isset($skorLabels[$aspek->skor]))
+                                            @if($aspek->skor && isset($skorLabels[$aspek->skor]))
                                                 <span class="badge rounded-pill border-0 px-2 py-1 fw-bold" style="font-size: 0.7rem; background-color: <?php echo $skorLabels[$aspek->skor]['color']; ?>20; color: <?php echo $skorLabels[$aspek->skor]['color']; ?>; border: 1px solid <?php echo $skorLabels[$aspek->skor]['color']; ?>40;">
                                                     {{ $skorLabels[$aspek->skor]['short'] }}
                                                 </span>
@@ -177,4 +177,3 @@
         </div>
     </div>
 @endsection
-

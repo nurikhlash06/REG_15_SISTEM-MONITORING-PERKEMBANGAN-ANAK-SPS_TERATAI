@@ -29,9 +29,6 @@
                     <div class="col-6">
                         <select name="aspek" class="form-select form-select-sm rounded-3 border-0 bg-light">
                             <option value="">Semua Aspek</option>
-                            @php
-                                $aspekOptions = ['Nilai Agama dan Budi Pekerti', 'Jati Diri', 'Dasar dasar Literasi, Matematika, sains teknologi, rekayasa dan seni'];
-                            @endphp
                             @foreach($aspekOptions as $opt)
                                 <option value="{{ $opt }}" @selected($selectedAspek === $opt)>{{ $opt }}</option>
                             @endforeach

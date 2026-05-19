@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\OrangTua;
 
 use App\Http\Controllers\Controller;
+use App\Models\Kelas;
+use App\Models\Murid;
+use App\Models\Perkembangan;
 use App\Traits\HasAspekStyles;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -24,17 +27,24 @@ class DashboardController extends Controller
         $anak = $this->anakCards($user->id);
         $chartPerBulan = $this->perkembanganBulananChart($user->id);
 
-        // Hitung statistik aspek per anak
         foreach ($anak as $a) {
-            $a->aspek_stats = $this->aspekStatsPerAnak($a->id);
+            $aspekResult = $this->aspekStatsPerAnak($a->id);
+            $a->aspek_stats = $aspekResult['stats'];
+            $a->total_persentase = $aspekResult['total_persentase'];
+            $a->hitung = $aspekResult['hitung'];
+            $a->bagian_penilaian = $aspekResult['bagian_penilaian'];
+            $a->kode_penilaian = $aspekResult['kode_penilaian'];
+            
+            $narasi = $this->getNarasiOtomatis($a->tingkat ?? 'A');
+            $a->target_perkembangan = $narasi;
         }
 
-        // Generate dynamic styles once for all aspects
-        $dynamicStyles = $this->generateDynamicStyles(array_keys($this->getColorMap()), 'aspect');
+        $dynamicStyles = '';
 
-        // Fitur Tambahan: Tips Parenting Harian
         $dailyTip = $this->getDailyTip();
 
+        $totalBobot = $this->getTotalBobot();
+        
         return view('orangtua.dashboard', [
             'user' => $user,
             'stats' => [
@@ -44,6 +54,7 @@ class DashboardController extends Controller
             'chartPerBulan' => $chartPerBulan,
             'dailyTip' => $dailyTip,
             'dynamicStyles' => $dynamicStyles,
+            'totalBobot' => $totalBobot,
         ]);
     }
 
@@ -67,65 +78,70 @@ class DashboardController extends Controller
             ]
         ];
 
-        // Pilih tip berdasarkan hari dalam setahun agar berganti setiap hari
         $index = (int) date('z') % count($tips);
         return $tips[$index];
     }
 
     private function aspekStatsPerAnak(int $muridId): array
     {
-        if (! Schema::hasTable('murid') || ! Schema::hasTable('perkembangan')) {
-            return [];
+        if (!Schema::hasTable('murid') || !Schema::hasTable('perkembangan')) {
+            return ['stats' => [], 'total_persentase' => 0, 'hitung' => null, 'bagian_penilaian' => [], 'kode_penilaian' => []];
         }
 
-        $targetAspeks = [
-            'Nilai Agama dan Budi Pekerti',
-            'Jati Diri',
-            'Dasar dasar Literasi, Matematika, sains teknologi, rekayasa dan seni'
-        ];
+        $murid = Murid::with('kelas')->find($muridId);
+        if (!$murid) return ['stats' => [], 'total_persentase' => 0, 'hitung' => null, 'bagian_penilaian' => [], 'kode_penilaian' => []];
 
-        // Ambil rata-rata skor per aspek untuk anak spesifik ini
-        $rows = DB::table('perkembangan')
-            ->where('murid_id', $muridId)
-            ->whereIn('aspek', $targetAspeks)
-            ->where('tanggal', '>=', now()->startOfMonth()) // Hanya data bulan ini
-            ->select(
-                'aspek',
-                DB::raw('count(id) as total'),
-                DB::raw('avg(skor) as rata_skor')
-            )
-            ->groupBy('aspek')
-            ->get()
-            ->keyBy('aspek');
+        $bagianPenilaian = $this->getBagianPenilaian();
+        $kodePenilaian = $this->getKodePenilaian();
+
+        $perkembanganList = Perkembangan::where('murid_id', $muridId)
+            ->whereMonth('tanggal', now()->month)
+            ->whereYear('tanggal', now()->year)
+            ->latest('tanggal')
+            ->get();
+
+        $latestPerAspek = [];
+        foreach ($perkembanganList as $p) {
+            if (!isset($latestPerAspek[$p->aspek]) || $p->tanggal > $latestPerAspek[$p->aspek]->tanggal) {
+                $latestPerAspek[$p->aspek] = $p;
+            }
+        }
+
+        $hitung = $this->hitungPerkembangan($latestPerAspek);
 
         $stats = [];
-        foreach ($targetAspeks as $aspek) {
-            $avg = $rows->has($aspek) ? (float) $rows[$aspek]->rata_skor : 0;
-            $percent = $avg > 0 ? round(($avg / 4) * 100) : 0;
-
-            if ($percent == 0 && ($rows->has($aspek) && $rows[$aspek]->total > 0)) {
-                $percent = 1;
-            }
-
-            $statusInfo = $this->getStatusInfo($percent);
+        foreach ($bagianPenilaian as $nama => $config) {
+            $nilaiBagian = $hitung['nilai_bagian'][$nama] ?? null;
+            $persentase = $nilaiBagian ? $nilaiBagian['persentase_kode'] : 0;
+            $statusLabel = $nilaiBagian && isset($kodePenilaian[$nilaiBagian['kode']]) ? $kodePenilaian[$nilaiBagian['kode']]['full'] : 'Belum ada data';
+            $statusColor = $nilaiBagian && isset($kodePenilaian[$nilaiBagian['kode']]) ? $kodePenilaian[$nilaiBagian['kode']]['color'] : '#9ca3af';
 
             $stats[] = (object) [
-                'name' => $aspek,
-                'count' => $rows->has($aspek) ? $rows[$aspek]->total : 0,
-                'percent' => $percent,
-                'status' => $statusInfo['label'],
-                'status_color' => $statusInfo['color'],
-                'status_bg' => $statusInfo['bg'],
-                'styles' => $this->getColorMap()[$aspek] ?? [],
+                'name' => $nama,
+                'count' => $perkembanganList->where('aspek', $nama)->count(),
+                'percent' => $persentase,
+                'status' => $statusLabel,
+                'status_color' => $statusColor,
+                'status_bg' => $statusColor . '20',
+                'styles' => [
+                    'icon' => $config['icon'],
+                    'text' => $config['color'],
+                ],
             ];
         }
 
-        return $stats;
+        return [
+            'stats' => $stats,
+            'total_persentase' => $hitung['total_persentase'],
+            'hitung' => $hitung,
+            'bagian_penilaian' => $bagianPenilaian,
+            'kode_penilaian' => $kodePenilaian,
+        ];
     }
 
     private function anakCards(int $userId)
     {
-        if (! Schema::hasTable('murid')) {
+        if (!Schema::hasTable('murid')) {
             return collect();
         }
 
@@ -148,35 +164,43 @@ class DashboardController extends Controller
                 'murid.lingkar_kepala',
                 'kelas.nama_kelas',
                 'kelas.kode_kelas',
+                'kelas.tingkat',
                 DB::raw('count(perkembangan.id) as total_perkembangan')
             )
-            ->groupBy('murid.id', 'murid.nama_lengkap', 'murid.foto', 'murid.nama_orang_tua', 'murid.email_orang_tua', 'murid.berat_badan', 'murid.tinggi_badan', 'murid.lingkar_kepala', 'kelas.nama_kelas', 'kelas.kode_kelas')
+            ->groupBy('murid.id', 'murid.nama_lengkap', 'murid.foto', 'murid.nama_orang_tua', 'murid.email_orang_tua', 'murid.berat_badan', 'murid.tinggi_badan', 'murid.lingkar_kepala', 'kelas.nama_kelas', 'kelas.kode_kelas', 'kelas.tingkat')
             ->orderBy('murid.nama_lengkap')
             ->get();
 
-        // Cari capaian terbaik untuk masing-masing anak
         foreach ($anak as $a) {
             $bestAspek = DB::table('perkembangan')
                 ->where('murid_id', $a->id)
                 ->whereMonth('tanggal', now()->month)
                 ->whereYear('tanggal', now()->year)
-                ->orderBy('skor', 'DESC')
                 ->first();
             
             $a->best_aspek = $bestAspek ? $bestAspek->aspek : null;
             $a->best_skor = $bestAspek ? $bestAspek->skor : null;
+
+            $kelompokUsia = $this->getKelompokUsia();
+            $warnaHex = [
+                'merah' => '#ef4444',
+                'kuning' => '#f59e0b',
+                'hijau' => '#10b981',
+            ];
+            $target = $kelompokUsia[$a->tingkat]['target'] ?? 75;
+            $a->standar_nilai = [
+                'kelompok' => $kelompokUsia[$a->tingkat]['label'] ?? $a->tingkat,
+                'target' => $target,
+                'status_warna' => $warnaHex,
+            ];
         }
 
         return $anak;
     }
 
-    /**
-     * Grafik perkembangan per bulan (hingga 6 bulan ke belakang)
-     * untuk seluruh anak yang dimiliki orang tua ini.
-     */
     private function perkembanganBulananChart(int $userId): array
     {
-        if (! Schema::hasTable('murid') || ! Schema::hasTable('perkembangan')) {
+        if (!Schema::hasTable('murid') || !Schema::hasTable('perkembangan')) {
             return ['labels' => [], 'data' => []];
         }
 
@@ -199,7 +223,7 @@ class DashboardController extends Controller
         for ($i = 5; $i >= 0; $i--) {
             $date = now()->subMonths($i);
             $monthKey = $date->format('Y-m');
-            $labels[] = $date->translatedFormat('M'); // Contoh: Jan, Feb, Mar
+            $labels[] = $date->translatedFormat('M');
             $data[] = $rows->where('bulan', $monthKey)->first()->total ?? 0;
         }
 
@@ -209,4 +233,3 @@ class DashboardController extends Controller
         ];
     }
 }
-

@@ -42,10 +42,10 @@ class PerkembanganController extends Controller
         }
 
         $perkembangan = $perkembanganQuery->paginate(10)->withQueryString();
-        $aspekOptions = array_keys($this->getColorMap());
+        $aspekOptions = array_keys($this->getBagianPenilaian());
         $colorMap = $this->getColorMap();
         $skorLabels = $this->getSkorLabels();
-        $dynamicStyles = $this->generateDynamicStyles($aspekOptions, 'aspek');
+        $dynamicStyles = '';
 
         return view('orangtua.perkembangan.index', compact('murid', 'perkembangan', 'selectedMuridId', 'selectedAspek', 'aspekOptions', 'colorMap', 'skorLabels', 'dynamicStyles'));
     }
@@ -54,18 +54,16 @@ class PerkembanganController extends Controller
     {
         $userId = Auth::id();
 
-        // Proteksi: hanya orang tua yang memiliki murid ini yang boleh melihat
         if (! $perkembangan->murid || $perkembangan->murid->id_user_orangtua !== $userId) {
             abort(403);
         }
 
         $perkembangan->load('murid', 'guruUser');
-        $aspekOptions = array_keys($this->getColorMap());
-        $dynamicStyles = $this->generateDynamicStyles($aspekOptions, 'aspek');
+        $aspekOptions = array_keys($this->getBagianPenilaian());
+        $dynamicStyles = '';
         $colorMap = $this->getColorMap();
         $skorLabels = $this->getSkorLabels();
 
         return view('orangtua.perkembangan.show', compact('perkembangan', 'dynamicStyles', 'colorMap', 'skorLabels'));
     }
 }
-

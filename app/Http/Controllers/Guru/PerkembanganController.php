@@ -48,12 +48,13 @@ class PerkembanganController extends Controller
         
         // Hitung ringkasan capaian jika ada murid yang terpilih/dicari
         $aspekSummary = [];
+        $bagianPenilaian = $this->getBagianPenilaian();
         $colorMap = $this->getColorMap();
         $dynamicStyles = '';
         
         if ($selectedMurid) {
-            $aspekOptions = array_keys($colorMap);
-            $dynamicStyles = $this->generateDynamicStyles($aspekOptions);
+            $aspekOptions = array_keys($bagianPenilaian);
+            $dynamicStyles = ''; // TODO: Implement generateDynamicStyles if needed
             
             foreach ($aspekOptions as $opt) {
                 $latest = Perkembangan::where('murid_id', $selectedMurid->id)
@@ -68,7 +69,7 @@ class PerkembanganController extends Controller
 
                 $aspekSummary[] = (object) [
                     'name' => $opt,
-                    'skor' => $latest ? $latest->skor : 0,
+                    'skor' => $latest ? $latest->skor : null,
                     'tanggal' => $latest ? $latest->tanggal : null,
                     'catatan' => $latest ? $latest->catatan : null,
                     'styles' => $styles,
@@ -78,7 +79,7 @@ class PerkembanganController extends Controller
 
         // Data pendukung untuk filter dropdown
         $murid = Murid::query()->orderBy('nama_lengkap')->get();
-        $aspekOptions = array_keys($colorMap);
+        $aspekOptions = array_keys($bagianPenilaian);
         $skorLabels = $this->getSkorLabels();
 
         return view('guru.perkembangan.index', compact('perkembangan', 'murid', 'aspekOptions', 'selectedMurid', 'aspekSummary', 'dynamicStyles', 'skorLabels'));
@@ -89,7 +90,7 @@ class PerkembanganController extends Controller
         $murid = Murid::query()->orderBy('nama_lengkap')->get();
         $selectedMuridId = $request->integer('murid_id') ?: null;
         $selectedAspek = $request->string('aspek') ?: null;
-        $aspekOptions = array_keys($this->getColorMap());
+        $aspekOptions = array_keys($this->getBagianPenilaian());
         $skorLabels = $this->getSkorLabels();
         $perkembangan = null;
 
@@ -102,7 +103,7 @@ class PerkembanganController extends Controller
             'murid_id' => ['required', 'integer', 'exists:murid,id'],
             'tanggal' => ['required', 'date'],
             'aspek' => ['required', 'string', 'max:100'],
-            'skor' => ['required', 'integer', 'min:1', 'max:4'],
+            'skor' => ['required', 'in:BM,KM,SM,K'],
             'catatan' => ['required', 'string'],
         ]);
 
@@ -116,7 +117,7 @@ class PerkembanganController extends Controller
     public function edit(Perkembangan $perkembangan)
     {
         $murid = Murid::query()->orderBy('nama_lengkap')->get();
-        $aspekOptions = array_keys($this->getColorMap());
+        $aspekOptions = array_keys($this->getBagianPenilaian());
         $skorLabels = $this->getSkorLabels();
 
         return view('guru.perkembangan.edit', compact('perkembangan', 'murid', 'aspekOptions', 'skorLabels'));
@@ -128,7 +129,7 @@ class PerkembanganController extends Controller
             'murid_id' => ['required', 'integer', 'exists:murid,id'],
             'tanggal' => ['required', 'date'],
             'aspek' => ['required', 'string', 'max:100'],
-            'skor' => ['required', 'integer', 'min:1', 'max:4'],
+            'skor' => ['required', 'in:BM,KM,SM,K'],
             'catatan' => ['required', 'string'],
         ]);
 
@@ -141,7 +142,7 @@ class PerkembanganController extends Controller
     {
         $perkembangan->delete();
 
-        return redirect()->route('guru.perkembangan.index')->with('success', 'Perkembangan berhasil dihapus.');
+        return back()->with('success', 'Perkembangan berhasil dihapus.');
     }
 }
 
