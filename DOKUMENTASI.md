@@ -131,6 +131,75 @@ Sistem ini membantu guru dalam mencatat dan mengelola data perkembangan anak, se
 
 ---
 
+## USE CASE DIAGRAM
+
+### Deskripsi Use Case Diagram
+
+Sistem SPS Teratai memiliki 2 aktor utama:
+
+1. **Guru**
+   - Login ke sistem
+   - Melihat dashboard guru
+   - Logout dari sistem
+   - Menambah data murid
+   - Mengedit data murid
+   - Menghapus data murid
+   - Melihat detail profil murid
+   - Menambah data kelas
+   - Mengedit data kelas
+   - Menghapus data kelas
+   - Menambah catatan perkembangan
+   - Mengedit catatan perkembangan
+   - Menghapus catatan perkembangan
+   - Melihat capaian perkembangan murid
+   - Menghapus riwayat perkembangan satu per satu
+   - Menghapus riwayat perkembangan satu bulan sekaligus
+   - Menambah akun orang tua
+   - Mengedit akun orang tua
+   - Menghapus akun orang tua
+
+2. **Orang Tua**
+   - Login ke sistem
+   - Melihat dashboard orang tua
+   - Logout dari sistem
+   - Melihat profil anak di dashboard
+   - Melihat grafik aktivitas belajar
+   - Melihat target perkembangan
+   - Melihat perhitungan nilai perkembangan
+   - Melihat semua laporan perkembangan anak
+   - Melihat detail laporan perkembangan
+
+---
+
+## SKENARIO USE CASE
+
+### Untuk Aktor GURU
+
+| No | Use Case | Skenario Normal |
+|----|----------|-----------------|
+| 1 | Login Guru | 1. Guru membuka halaman login <br> 2. Guru memasukkan email dan password <br> 3. Guru menekan tombol Login <br> 4. Sistem memverifikasi kredensial <br> 5. Sistem menampilkan dashboard guru |
+| 2 | Melihat Dashboard Guru | 1. Guru berhasil login <br> 2. Sistem menampilkan dashboard guru dengan statistik murid, rombel, dan catatan perkembangan bulan ini <br> 3. Guru melihat aksi cepat untuk navigasi |
+| 3 | Logout | 1. Guru menekan tombol Logout di sidebar <br> 2. Sistem mengakhiri sesi <br> 3. Sistem menampilkan halaman login |
+| 4 | Menambah Data Murid | 1. Guru membuka menu Daftar Murid <br> 2. Guru menekan tombol Tambah Murid <br> 3. Guru mengisi formulir data murid (nama lengkap, tempat lahir, tanggal lahir, jenis kelamin, agama, nama orang tua, email orang tua, telepon orang tua, foto, berat badan, tinggi badan, lingkar kepala, kelas) <br> 4. Guru menekan tombol Simpan <br> 5. Sistem menyimpan data murid dan menampilkan pesan sukses |
+| 5 | Mengedit Data Murid | 1. Guru membuka menu Daftar Murid <br> 2. Guru menekan tombol Edit pada data murid yang ingin diubah <br> 3. Guru mengubah data murid yang diperlukan <br> 4. Guru menekan tombol Simpan <br> 5. Sistem memperbarui data murid dan menampilkan pesan sukses |
+| 6 | Menghapus Data Murid | 1. Guru membuka menu Daftar Murid <br> 2. Guru menekan tombol Hapus pada data murid yang ingin dihapus <br> 3. Sistem menampilkan konfirmasi penghapusan <br> 4. Guru menekan tombol Ya untuk mengkonfirmasi <br> 5. Sistem menghapus data murid dan menampilkan pesan sukses |
+| 7 | Melihat Detail Profil Murid | 1. Guru membuka menu Daftar Murid <br> 2. Guru menekan tombol Detail pada data murid <br> 3. Sistem menampilkan profil murid secara lengkap termasuk riwayat perkembangan |
+| 8 | Menambah Catatan Perkembangan | 1. Guru membuka menu Perkembangan <br> 2. Guru menekan tombol Tambah Perkembangan <br> 3. Guru memilih murid, aspek perkembangan, skor penilaian, dan mengisi catatan <br> 4. Guru menekan tombol Simpan <br> 5. Sistem menyimpan catatan perkembangan dan menampilkan pesan sukses |
+| 9 | Melihat Capaian Perkembangan | 1. Guru membuka menu Capaian Perkembangan <br> 2. Sistem menampilkan daftar murid beserta capaian perkembangannya <br> 3. Guru menekan tombol Detail pada murid yang ingin dilihat <br> 4. Sistem menampilkan capaian perkembangan secara detail beserta riwayat per bulan |
+| 10 | Menghapus Riwayat Perkembangan Satu Bulan | 1. Guru membuka halaman detail capaian perkembangan murid <br> 2. Guru menekan tombol Hapus pada riwayat perkembangan per bulan yang ingin dihapus <br> 3. Sistem menampilkan konfirmasi penghapusan <br> 4. Guru menekan tombol Ya untuk mengkonfirmasi <br> 5. Sistem menghapus seluruh riwayat perkembangan bulan tersebut dan menampilkan pesan sukses |
+
+### Untuk Aktor ORANG TUA
+
+| No | Use Case | Skenario Normal |
+|----|----------|-----------------|
+| 1 | Login Orang Tua | 1. Orang tua membuka halaman login <br> 2. Orang tua memasukkan email dan password <br> 3. Orang tua menekan tombol Login <br> 4. Sistem memverifikasi kredensial <br> 5. Sistem menampilkan dashboard orang tua |
+| 2 | Melihat Dashboard Orang Tua | 1. Orang tua berhasil login <br> 2. Sistem menampilkan dashboard orang tua dengan profil anak, grafik aktivitas belajar, target perkembangan, dan perhitungan nilai <br> 3. Orang tua melihat informasi perkembangan anak |
+| 3 | Logout | 1. Orang tua menekan tombol Logout di sidebar <br> 2. Sistem mengakhiri sesi <br> 3. Sistem menampilkan halaman login |
+| 4 | Melihat Semua Laporan Perkembangan | 1. Orang tua membuka menu Perkembangan <br> 2. Sistem menampilkan semua laporan perkembangan anak <br> 3. Orang tua melihat laporan perkembangan |
+| 5 | Melihat Detail Laporan Perkembangan | 1. Orang tua menekan tombol Detail pada laporan perkembangan <br> 2. Sistem menampilkan detail laporan perkembangan secara lengkap |
+
+---
+
 ## LISENSI
 
 Project ini dikembangkan untuk tujuan pendidikan dan monitoring perkembangan anak.
