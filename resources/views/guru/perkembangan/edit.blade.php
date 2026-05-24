@@ -25,8 +25,6 @@
                 @include('guru.perkembangan._form', [
                     'murid' => $murid,
                     'perkembangan' => $perkembangan,
-                    'aspekOptions' => $aspekOptions,
-                    'skorLabels' => $skorLabels,
                 ])
 
                 <div class="mt-4 d-flex gap-2">

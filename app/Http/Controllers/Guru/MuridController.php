@@ -59,7 +59,7 @@ class MuridController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'nama_lengkap' => ['required', 'string', 'max:100'],
+            'nama_lengkap' => ['required', 'string', 'max:255'],
             'jenis_kelamin' => ['required', 'in:L,P'],
             'tanggal_lahir' => ['nullable', 'date'],
             'nik' => ['nullable', 'string', 'size:16'],
@@ -69,8 +69,8 @@ class MuridController extends Controller
             'berat_badan' => ['nullable', 'numeric', 'min:0'],
             'tinggi_badan' => ['nullable', 'numeric', 'min:0'],
             'lingkar_kepala' => ['nullable', 'numeric', 'min:0'],
-            'nama_orang_tua' => ['required', 'string', 'max:100'],
-            'email_orang_tua' => ['nullable', 'email', 'max:100'],
+            'nama_orang_tua' => ['required', 'string', 'max:255'],
+            'email_orang_tua' => ['nullable', 'email', 'max:255'],
             'foto' => ['nullable', 'image', 'max:2048'],
         ]);
 
@@ -109,10 +109,9 @@ class MuridController extends Controller
         }]);
 
         $aspekSummary = [];
-        $bagianPenilaian = $this->getBagianPenilaian();
         $colorMap = $this->getColorMap();
-        $aspekOptions = array_keys($bagianPenilaian);
-        $dynamicStyles = '';
+        $aspekOptions = array_keys($colorMap);
+        $dynamicStyles = $this->generateDynamicStyles($aspekOptions);
         $skorLabels = $this->getSkorLabels();
         
         foreach ($aspekOptions as $opt) {
@@ -124,7 +123,7 @@ class MuridController extends Controller
 
             $aspekSummary[] = (object) [
                 'name' => $opt,
-                'skor' => $latest ? $latest->skor : null,
+                'skor' => $latest ? $latest->skor : 0,
                 'tanggal' => $latest ? $latest->tanggal : null,
                 'catatan' => $latest ? $latest->catatan : null,
                 'styles' => $styles,
@@ -149,7 +148,7 @@ class MuridController extends Controller
     public function update(Request $request, Murid $murid)
     {
         $data = $request->validate([
-            'nama_lengkap' => ['required', 'string', 'max:100'],
+            'nama_lengkap' => ['required', 'string', 'max:255'],
             'jenis_kelamin' => ['required', 'in:L,P'],
             'tanggal_lahir' => ['nullable', 'date'],
             'nik' => ['nullable', 'string', 'size:16'],
@@ -159,8 +158,8 @@ class MuridController extends Controller
             'berat_badan' => ['nullable', 'numeric', 'min:0'],
             'tinggi_badan' => ['nullable', 'numeric', 'min:0'],
             'lingkar_kepala' => ['nullable', 'numeric', 'min:0'],
-            'nama_orang_tua' => ['required', 'string', 'max:100'],
-            'email_orang_tua' => ['nullable', 'email', 'max:100'],
+            'nama_orang_tua' => ['required', 'string', 'max:255'],
+            'email_orang_tua' => ['nullable', 'email', 'max:255'],
             'foto' => ['nullable', 'image', 'max:2048'],
         ]);
 

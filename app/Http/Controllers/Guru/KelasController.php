@@ -24,7 +24,7 @@ class KelasController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nama_kelas' => 'required|string|max:50',
+            'nama_kelas' => 'required|string|max:100',
             'kode_kelas' => 'required|string|max:20|unique:kelas,kode_kelas',
             'deskripsi' => 'nullable|string',
             'wali_kelas' => 'nullable|string|max:100',
@@ -61,7 +61,7 @@ class KelasController extends Controller
         $kelas = Kelas::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
-            'nama_kelas' => 'required|string|max:50',
+            'nama_kelas' => 'required|string|max:100',
             'kode_kelas' => 'required|string|max:20|unique:kelas,kode_kelas,' . $id,
             'deskripsi' => 'nullable|string',
             'wali_kelas' => 'nullable|string|max:100',

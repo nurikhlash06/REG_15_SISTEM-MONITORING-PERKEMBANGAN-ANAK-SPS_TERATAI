@@ -13,7 +13,7 @@ return new class extends Migration
             $table->unsignedBigInteger('murid_id')->index();
             $table->unsignedBigInteger('user_id_guru')->index();
             $table->date('tanggal');
-            $table->string('aspek', 50); // Motorik / Kognitif / Bahasa / Sosial / dll
+            $table->string('aspek'); // Motorik / Kognitif / Bahasa / Sosial / dll
             $table->text('catatan');
             $table->timestamps();
         });

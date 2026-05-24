@@ -47,10 +47,5 @@ class Murid extends Model
     {
         return $this->belongsTo(Kelas::class);
     }
-
-    public function penilaianMingguans()
-    {
-        return $this->hasMany(PenilaianMingguan::class, 'murid_id');
-    }
 }
 

@@ -4,7 +4,7 @@
 
 @section('content')
     @if(isset($dynamicStyles))
-        <style>{{ $dynamicStyles }}</style>
+        <style><?php echo $dynamicStyles; ?></style>
     @endif
     <div class="mb-4 d-flex align-items-center gap-3">
         <a href="{{ route('orangtua.perkembangan.index') }}" class="btn btn-sm btn-light rounded-circle p-2 shadow-sm">
@@ -25,7 +25,7 @@
                 
                 @if($perkembangan->skor && isset($skorLabels[$perkembangan->skor]))
                     <div class="mb-3">
-                        <span class="badge rounded-pill px-3 py-2" style="background-color: {{ $skorLabels[$perkembangan->skor]['color'] }}20; color: {{ $skorLabels[$perkembangan->skor]['color'] }}; border: 1px solid {{ $skorLabels[$perkembangan->skor]['color'] }}40;">
+                        <span class="badge rounded-pill px-3 py-2" style="background-color: <?php echo $skorLabels[$perkembangan->skor]['color']; ?>20; color: <?php echo $skorLabels[$perkembangan->skor]['color']; ?>; border: 1px solid <?php echo $skorLabels[$perkembangan->skor]['color']; ?>40;">
                             {{ $skorLabels[$perkembangan->skor]['short'] }} - {{ $skorLabels[$perkembangan->skor]['full'] }}
                         </span>
                     </div>
@@ -36,7 +36,7 @@
                         $slug = \Illuminate\Support\Str::slug($perkembangan->aspek);
                         $styles = $colorMap[$perkembangan->aspek] ?? null;
                     @endphp
-                    <div class="aspek-icon-box aspect-icon-{{ $slug }}" 
+                    <div class="aspek-icon-box aspect-icon-<?php echo $slug; ?>" 
                          style="width: 50px; height: 50px;">
                         <i class="bi {{ $styles['icon'] ?? 'bi-pencil' }} fs-4"></i>
                     </div>

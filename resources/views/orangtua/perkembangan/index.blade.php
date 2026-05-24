@@ -4,7 +4,7 @@
 
 @section('content')
     @if(isset($dynamicStyles))
-        <style>{{ $dynamicStyles }}</style>
+        <style><?php echo $dynamicStyles; ?></style>
     @endif
     <div class="mb-4">
         <h4 class="fw-bold mb-1">Catatan Perkembangan 📚</h4>
@@ -29,6 +29,9 @@
                     <div class="col-6">
                         <select name="aspek" class="form-select form-select-sm rounded-3 border-0 bg-light">
                             <option value="">Semua Aspek</option>
+                            @php
+                                $aspekOptions = ['Nilai Agama/Moral', 'Fisik-Motorik', 'Kognitif', 'Bahasa', 'Sosial-Emosional', 'Seni'];
+                            @endphp
                             @foreach($aspekOptions as $opt)
                                 <option value="{{ $opt }}" @selected($selectedAspek === $opt)>{{ $opt }}</option>
                             @endforeach
@@ -50,14 +53,14 @@
             @php 
                 $slug = \Illuminate\Support\Str::slug($p->aspek);
             @endphp
-            <div class="card card-mobile p-3 border-start border-4 aspek-card-{{ $slug }} border-aspek">
+            <div class="card card-mobile p-3 border-start border-4 aspek-card-<?php echo $slug; ?> border-aspek">
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <div>
                         <span class="badge bg-light text-dark border small mb-1">{{ $p->tanggal?->format('d M Y') ?? '-' }}</span>
-                        <h6 class="fw-bold mb-0" style="color: {{ $colorMap[$p->aspek]['text'] ?? '#334155' }};">{{ $p->aspek }}</h6>
+                        <h6 class="fw-bold mb-0" style="color: <?php echo $colorMap[$p->aspek]['text'] ?? '#334155'; ?>;">{{ $p->aspek }}</h6>
                         
                         @if($p->skor && isset($skorLabels[$p->skor]))
-                            <span class="badge rounded-pill small mt-1" style="font-size: 0.65rem; background-color: {{ $skorLabels[$p->skor]['color'] }}15; color: {{ $skorLabels[$p->skor]['color'] }}; border: 1px solid {{ $skorLabels[$p->skor]['color'] }}30;">
+                            <span class="badge rounded-pill small mt-1" style="font-size: 0.65rem; background-color: <?php echo $skorLabels[$p->skor]['color']; ?>15; color: <?php echo $skorLabels[$p->skor]['color']; ?>; border: 1px solid <?php echo $skorLabels[$p->skor]['color']; ?>30;">
                                 {{ $skorLabels[$p->skor]['short'] }}
                             </span>
                         @endif

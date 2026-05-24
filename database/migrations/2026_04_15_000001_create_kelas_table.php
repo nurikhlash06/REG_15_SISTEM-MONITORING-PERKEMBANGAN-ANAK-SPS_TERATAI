@@ -10,10 +10,10 @@ return new class extends Migration
     {
         Schema::create('kelas', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_kelas', 50);
-            $table->string('kode_kelas', 20)->unique();
+            $table->string('nama_kelas');
+            $table->string('kode_kelas')->unique();
             $table->text('deskripsi')->nullable();
-            $table->string('wali_kelas', 100)->nullable();
+            $table->string('wali_kelas')->nullable();
             $table->enum('tingkat', ['A', 'B', 'B1']);
             $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
             $table->timestamps();

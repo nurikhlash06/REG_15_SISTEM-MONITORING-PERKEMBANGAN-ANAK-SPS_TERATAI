@@ -40,6 +40,9 @@ class User extends Authenticatable
         return $this->role === 'orang_tua';
     }
 
+    /**
+     * Relasi ke Murid (hanya untuk role orang_tua)
+     */
     public function murid()
     {
         return $this->hasMany(Murid::class, 'id_user_orangtua');

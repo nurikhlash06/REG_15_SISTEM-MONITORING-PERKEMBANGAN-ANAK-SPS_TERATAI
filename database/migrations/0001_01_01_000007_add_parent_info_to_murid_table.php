@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('murid', function (Blueprint $table) {
-            $table->string('nama_orang_tua', 100)->nullable()->after('id_user_orangtua');
-            $table->string('email_orang_tua', 100)->nullable()->after('nama_orang_tua');
+            $table->string('nama_orang_tua')->nullable()->after('id_user_orangtua');
+            $table->string('email_orang_tua')->nullable()->after('nama_orang_tua');
         });
     }
 
