@@ -1,7 +1,11 @@
 {
   "version": 2,
-  "buildCommand": "",
+  "buildCommand": "echo 'No build required'",
   "outputDirectory": ".",
+  "projectSettings": {
+    "framework": null,
+    "nodeVersion": "20.x"
+  },
   "functions": {
     "api/index.php": {
       "runtime": "vercel-php@0.7.4"
