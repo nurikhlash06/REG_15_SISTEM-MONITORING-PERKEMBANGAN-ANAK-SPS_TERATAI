@@ -1,23 +1,25 @@
 {
   "version": 2,
-  "buildCommand": "",
-  "outputDirectory": ".",
+  "buildCommand": "php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+  "outputDirectory": "public",
   "projectSettings": {
     "framework": null,
     "nodeVersion": "20.x"
   },
   "functions": {
-    "api/index.php": {
-      "runtime": "vercel-php@0.7.4"
+    "index.php": {
+      "runtime": "vercel-php@0.7.4",
+      "memory": 3008,
+      "maxDuration": 60
     }
   },
   "routes": [
-    { "src": "/build/(.*)", "dest": "/public/build/$1" },
-    { "src": "/(css|js|images|fonts)/(.*)", "dest": "/public/$1/$2" },
-    {
-      "src": "/(.*\\.(css|js|gif|jpg|jpeg|png|svg|ico|txt|xml|woff|woff2|ttf|eot))$",
-      "dest": "/public/$1"
-    },
-    { "src": "/(.*)", "dest": "/api/index.php" }
+    { "src": "/build/(.*)", "dest": "/build/$1" },
+    { "src": "/css/(.*)", "dest": "/css/$1" },
+    { "src": "/js/(.*)", "dest": "/js/$1" },
+    { "src": "/images/(.*)", "dest": "/images/$1" },
+    { "src": "/fonts/(.*)", "dest": "/fonts/$1" },
+    { "src": "/(.*\\.(css|js|gif|jpg|jpeg|png|svg|ico|txt|xml|woff|woff2|ttf|eot))$", "dest": "/$1" },
+    { "src": "/(.*)", "dest": "/index.php" }
   ]
 }
