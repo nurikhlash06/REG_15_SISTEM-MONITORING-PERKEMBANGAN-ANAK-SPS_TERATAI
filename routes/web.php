@@ -8,6 +8,7 @@ use App\Http\Controllers\Guru\KelasController;
 use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
 use App\Http\Controllers\Guru\MuridController as GuruMuridController;
 use App\Http\Controllers\Guru\PerkembanganController as GuruPerkembanganController;
+use App\Http\Controllers\Guru\CapaianPerkembanganController as GuruCapaianPerkembanganController;
 use App\Http\Controllers\OrangTua\DashboardController as OrangTuaDashboardController;
 use App\Http\Controllers\OrangTua\PerkembanganController as OrangTuaPerkembanganController;
 
@@ -28,6 +29,9 @@ Route::prefix('guru')->name('guru.')->middleware(['auth', 'guru'])->group(functi
     Route::resource('kelas', KelasController::class)->parameters(['kelas' => 'kelas']);
     Route::resource('perkembangan', GuruPerkembanganController::class)->except(['show']);
     Route::resource('orangtua', UserOrangtuaController::class)->except(['show']);
+    Route::get('/capaian-perkembangan', [GuruCapaianPerkembanganController::class, 'index'])->name('capaian-perkembangan.index');
+    Route::get('/capaian-perkembangan/{id}', [GuruCapaianPerkembanganController::class, 'show'])->name('capaian-perkembangan.show');
+    Route::delete('/capaian-perkembangan/{id}/riwayat/{bulan}/{tahun}', [GuruCapaianPerkembanganController::class, 'destroyRiwayat'])->name('capaian-perkembangan.destroy-riwayat');
 });
 
 // Orang Tua Routes
