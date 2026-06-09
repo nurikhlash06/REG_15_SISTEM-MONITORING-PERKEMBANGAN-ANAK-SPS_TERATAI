@@ -378,4 +378,27 @@ trait HasAspekStyles
 
         return $labels;
     }
+
+    /**
+     * Generate dynamic CSS styles based on aspek options.
+     */
+    protected function generateDynamicStyles(array $aspekOptions, string $prefix = ''): string
+    {
+        $styles = '';
+        $colorMap = $this->getColorMap();
+
+        foreach ($aspekOptions as $aspek) {
+            $slug = \Illuminate\Support\Str::slug($aspek);
+            $config = $colorMap[$aspek] ?? [
+                'card_bg' => '#f8fafc',
+                'icon_bg' => '#f1f5f9',
+                'text' => '#64748b'
+            ];
+
+            $styles .= ".aspek-card-{$slug} { background-color: {$config['card_bg']}; } ";
+            $styles .= ".aspect-icon-{$slug} { background-color: {$config['icon_bg']}; color: {$config['text']}; } ";
+        }
+
+        return $styles;
+    }
 }
