@@ -222,27 +222,54 @@
             </div>
         </div>
 
-        <!-- Target Perkembangan Tabs -->
+        <!-- Target Perkembangan -->
         <div class="col-12">
             <div class="card border-0 shadow-sm mb-3" style="border-radius: 20px;">
                 <div class="card-body p-3">
-                    <div class="d-flex align-items-center justify-content-between mb-2">
-                        <h6 class="fw-bold mb-0 text-dark small">Target Perkembangan</h6>
-                        @if($anak->count() > 0)
-                            <span class="text-muted small">Kelompok A (Usia 2 - <4 tahun)</span>
-                        @endif
-                    </div>
-                    @foreach($colorMap as $aspek => $style)
-                        <div class="d-flex align-items-center justify-content-between py-2 border-bottom last:border-0">
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background-color: {{ $style['text'] }}10;">
-                                    <i class="bi {{ $style['icon'] }}" style="font-size: 1rem; color: {{ $style['text'] }};"></i>
-                                </div>
-                                <span class="text-dark small fw-semibold">{{ $aspek }}</span>
+                    <h6 class="fw-bold mb-0 text-dark small mb-3">Target Pencapaian Perkembangan</h6>
+
+                    <!-- Tabs for kelompok umur -->
+                    <ul class="nav nav-pills gap-2 mb-3 px-1 overflow-auto flex-nowrap pb-2" id="targetTabs" role="tablist" style="scrollbar-width: none; -ms-overflow-style: none;">
+                        @foreach($targetPerkembangan as $key => $target)
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link rounded-pill px-3 py-1 small fw-bold {{ $key == 'A' ? 'active' : '' }}"
+                                        id="target-tab-{{ $key }}"
+                                        data-bs-toggle="pill"
+                                        data-bs-target="#target-{{ $key }}"
+                                        type="button"
+                                        role="tab"
+                                        style="font-size: 0.75rem; white-space: nowrap;">
+                                    {{ $target['judul'] }}
+                                </button>
+                            </li>
+                        @endforeach
+                    </ul>
+
+                    <!-- Tab content -->
+                    <div class="tab-content" id="targetTabsContent">
+                        @foreach($targetPerkembangan as $key => $target)
+                            <div class="tab-pane fade {{ $key == 'A' ? 'show active' : '' }}" id="target-{{ $key }}" role="tabpanel">
+                                @foreach($target['bagian'] as $bagian)
+                                    @php
+                                        $style = $colorMap[$bagian['nama']] ?? ['text' => '#64748b', 'icon' => 'bi-circle'];
+                                    @endphp
+                                    <div class="mb-3 pb-3 border-bottom last:border-0">
+                                        <div class="d-flex align-items-center gap-2 mb-2">
+                                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background-color: {{ $style['text'] }}10;">
+                                                <i class="bi {{ $style['icon'] }}" style="font-size: 1rem; color: {{ $style['text'] }};"></i>
+                                            </div>
+                                            <h6 class="fw-bold text-dark mb-0 small">{{ $bagian['nama'] }}</h6>
+                                        </div>
+                                        <ul class="mb-0 pl-6 ps-3">
+                                            @foreach($bagian['list'] as $item)
+                                                <li class="text-muted small mb-1" style="line-height: 1.5;">{{ $item }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endforeach
                             </div>
-                            <i class="bi bi-chevron-down text-muted"></i>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>
