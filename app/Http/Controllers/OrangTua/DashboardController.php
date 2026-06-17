@@ -211,5 +211,37 @@ class DashboardController extends Controller
             'data' => $data,
         ];
     }
+
+    /**
+     * Dapatkan info status (label, warna, bg) berdasarkan persentase
+     */
+    private function getStatusInfo(float $percent): array
+    {
+        if ($percent >= 80) {
+            return [
+                'label' => 'Sangat Baik',
+                'color' => '#10b981',
+                'bg' => '#d1fae5'
+            ];
+        } elseif ($percent >= 60) {
+            return [
+                'label' => 'Baik',
+                'color' => '#6366f1',
+                'bg' => '#e0e7ff'
+            ];
+        } elseif ($percent >= 40) {
+            return [
+                'label' => 'Cukup',
+                'color' => '#f59e0b',
+                'bg' => '#fffbeb'
+            ];
+        } else {
+            return [
+                'label' => 'Perlu Perhatian',
+                'color' => '#ef4444',
+                'bg' => '#fee2e2'
+            ];
+        }
+    }
 }
 
