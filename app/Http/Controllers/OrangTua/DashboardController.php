@@ -32,8 +32,12 @@ class DashboardController extends Controller
         // Generate dynamic styles once for all aspects
         $dynamicStyles = $this->generateDynamicStyles(array_keys($this->getColorMap()), 'aspect');
 
-        // Fitur Tambahan: Tips Parenting Harian
-        $dailyTip = $this->getDailyTip();
+        // Ambil target perkembangan per kelompok usia
+        $targetPerkembangan = [
+            'A' => $this->getNarasiOtomatis('A'),
+            'B' => $this->getNarasiOtomatis('B'),
+            'C' => $this->getNarasiOtomatis('C'),
+        ];
 
         return view('orangtua.dashboard', [
             'user' => $user,
@@ -42,35 +46,12 @@ class DashboardController extends Controller
             ],
             'anak' => $anak,
             'chartPerBulan' => $chartPerBulan,
-            'dailyTip' => $dailyTip,
+            'targetPerkembangan' => $targetPerkembangan,
             'dynamicStyles' => $dynamicStyles,
         ]);
     }
 
-    private function getDailyTip(): array
-    {
-        $tips = [
-            [
-                'title' => 'Membaca Buku',
-                'content' => 'Membacakan buku sebelum tidur dapat meningkatkan kemampuan bahasa dan imajinasi anak.',
-                'icon' => '📖'
-            ],
-            [
-                'title' => 'Apresiasi Kecil',
-                'content' => 'Berikan pujian yang spesifik saat anak melakukan hal baik, seperti "Hebat, kamu sudah merapikan mainan!".',
-                'icon' => '🌟'
-            ],
-            [
-                'title' => 'Waktu Istirahat',
-                'content' => 'Tidur siang yang cukup membantu anak lebih fokus dan tidak mudah rewel di sore hari.',
-                'icon' => '💤'
-            ]
-        ];
 
-        // Pilih tip berdasarkan hari dalam setahun agar berganti setiap hari
-        $index = (int) date('z') % count($tips);
-        return $tips[$index];
-    }
 
     private function aspekStatsPerAnak(int $muridId): array
     {
