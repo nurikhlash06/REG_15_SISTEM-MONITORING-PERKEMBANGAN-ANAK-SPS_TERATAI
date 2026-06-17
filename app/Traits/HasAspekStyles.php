@@ -17,7 +17,17 @@ trait HasAspekStyles
                 'icon' => 'bi-star-fill',
                 'color' => '#f59e0b',
             ],
+            'Nilai Agama/Moral' => [
+                'bobot' => 21,
+                'icon' => 'bi-star-fill',
+                'color' => '#f59e0b',
+            ],
             'Perkembangan Fisik' => [
+                'bobot' => 6,
+                'icon' => 'bi-heart-pulse',
+                'color' => '#10b981',
+            ],
+            'Fisik-Motorik' => [
                 'bobot' => 6,
                 'icon' => 'bi-heart-pulse',
                 'color' => '#10b981',
@@ -26,6 +36,26 @@ trait HasAspekStyles
                 'bobot' => 70,
                 'icon' => 'bi-journal-text',
                 'color' => '#6366f1',
+            ],
+            'Kognitif' => [
+                'bobot' => 20,
+                'icon' => 'bi-lightbulb',
+                'color' => '#6366f1',
+            ],
+            'Bahasa' => [
+                'bobot' => 20,
+                'icon' => 'bi-chat-square-text',
+                'color' => '#06b6d4',
+            ],
+            'Sosial-Emosional' => [
+                'bobot' => 20,
+                'icon' => 'bi-people',
+                'color' => '#ec4899',
+            ],
+            'Seni' => [
+                'bobot' => 10,
+                'icon' => 'bi-palette',
+                'color' => '#8b5cf6',
             ],
         ];
     }

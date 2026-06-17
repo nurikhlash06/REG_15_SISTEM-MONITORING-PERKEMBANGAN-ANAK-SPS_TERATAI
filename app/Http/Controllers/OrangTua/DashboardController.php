@@ -103,7 +103,7 @@ class DashboardController extends Controller
 
         $stats = [];
         foreach ($targetAspeks as $aspek) {
-            $avg = $rows->has($aspek) ? (float) $rows[$aspek]->rata_skor : 0;
+            $avg = $rows->has($aspek) ? (float)$rows[$aspek]->rata_skor : 0;
             $percent = $avg > 0 ? round(($avg / 4) * 100) : 0;
 
             if ($percent == 0 && ($rows->has($aspek) && $rows[$aspek]->total > 0)) {
@@ -111,6 +111,13 @@ class DashboardController extends Controller
             }
 
             $statusInfo = $this->getStatusInfo($percent);
+            $styles = $this->getColorMap()[$aspek] ?? [
+                'bg' => 'secondary',
+                'icon' => 'bi-circle',
+                'text' => '#64748b',
+                'icon_bg' => '#f1f5f9',
+                'card_bg' => '#f8fafc',
+            ];
 
             $stats[] = (object) [
                 'name' => $aspek,
@@ -119,7 +126,7 @@ class DashboardController extends Controller
                 'status' => $statusInfo['label'],
                 'status_color' => $statusInfo['color'],
                 'status_bg' => $statusInfo['bg'],
-                'styles' => $this->getColorMap()[$aspek] ?? [],
+                'styles' => $styles,
             ];
         }
 
