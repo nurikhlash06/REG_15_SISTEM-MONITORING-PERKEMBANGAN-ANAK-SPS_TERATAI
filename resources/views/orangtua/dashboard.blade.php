@@ -22,52 +22,6 @@
         </div>
     </div>
 
-    <!-- Target Perkembangan -->
-    <div class="mb-4">
-        <div class="d-flex align-items-center justify-content-between mb-3">
-            <h6 class="fw-bold mb-0 text-dark">Target Pencapaian Perkembangan</h6>
-        </div>
-
-        <ul class="nav nav-pills gap-2 mb-3 px-1 overflow-auto flex-nowrap pb-2" id="targetTabs" role="tablist" style="scrollbar-width: none; -ms-overflow-style: none;">
-            @foreach($targetPerkembangan as $key => $target)
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link rounded-pill px-3 py-1 small fw-bold {{ $key === 'A' ? 'active' : '' }}"
-                            id="target-tab-{{ $key }}"
-                            data-bs-toggle="pill"
-                            data-bs-target="#target-{{ $key }}"
-                            type="button"
-                            role="tab"
-                            style="font-size: 0.75rem; white-space: nowrap;">
-                        {{ $target['judul'] }}
-                    </button>
-                </li>
-            @endforeach
-        </ul>
-
-        <div class="tab-content" id="targetTabsContent">
-            @foreach($targetPerkembangan as $key => $target)
-                <div class="tab-pane fade {{ $key === 'A' ? 'show active' : '' }}" id="target-{{ $key }}" role="tabpanel">
-                    @foreach($target['bagian'] as $bagian)
-                        <div class="card border-0 shadow-sm mb-3" style="border-radius: 16px;">
-                            <div class="card-body p-3">
-                                <div class="d-flex align-items-center gap-2 mb-2">
-                                    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background-color: {{ $bagian['warna'] }}20;">
-                                        <i class="bi {{ $bagian['icon'] }}" style="font-size: 1rem; color: {{ $bagian['warna'] }};"></i>
-                                    </div>
-                                    <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.9rem;">{{ $bagian['nama'] }}</h6>
-                                </div>
-                                <ul class="mb-0 ps-3">
-                                    @foreach($bagian['list'] as $item)
-                                        <li class="text-muted small mb-1" style="line-height: 1.5;">{{ $item }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            @endforeach
-        </div>
-    </div>
 
     <!-- Stats Summary Section -->
     <div class="row g-3 mb-4">
