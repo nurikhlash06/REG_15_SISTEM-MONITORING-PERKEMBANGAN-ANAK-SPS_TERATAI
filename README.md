@@ -6,7 +6,7 @@ Sistem informasi berbasis web yang dirancang khusus untuk mempermudah guru dan o
 
 - **Dashboard Guru**: Ringkasan statistik murid, kelas, dan aktivitas terbaru.
 - **Manajemen Murid & Kelas**: Pengelolaan data murid lengkap dengan foto profil dan riwayat fisik.
-- **Monitoring Orang Tua**: Dashboard khusus wali murid untuk melihat progress 6 aspek perkembangan anak (Agama, Fisik-Motorik, Kognitif, Bahasa, Sosial-Emosional, Seni).
+- **Monitoring Orang Tua**: Dashboard khusus wali murid untuk melihat progress 3 aspek perkembangan anak (Agama & Moral, Perkembangan Fisik, Program Literasi & Sains).
 - **Visualisasi Dinamis**: Menggunakan sistem warna dan ikon minimalis yang memudahkan pemantauan.
 - **Laporan Perkembangan**: Catatan historis perkembangan anak yang dapat dipantau dari waktu ke waktu.
 
