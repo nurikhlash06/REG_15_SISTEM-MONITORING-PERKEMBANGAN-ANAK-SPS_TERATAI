@@ -78,14 +78,7 @@ class DashboardController extends Controller
             return [];
         }
 
-        $targetAspeks = [
-            'Nilai Agama/Moral',
-            'Fisik-Motorik',
-            'Kognitif',
-            'Bahasa',
-            'Sosial-Emosional',
-            'Seni'
-        ];
+        $targetAspeks = array_keys($this->getColorMap());
 
         // Ambil rata-rata skor per aspek untuk anak spesifik ini
         $rows = DB::table('perkembangan')
