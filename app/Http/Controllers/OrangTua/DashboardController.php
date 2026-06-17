@@ -166,9 +166,10 @@ class DashboardController extends Controller
                 'murid.lingkar_kepala',
                 'kelas.nama_kelas',
                 'kelas.kode_kelas',
+                'kelas.tingkat',
                 DB::raw('count(perkembangan.id) as total_perkembangan')
             )
-            ->groupBy('murid.id', 'murid.nama_lengkap', 'murid.foto', 'murid.nama_orang_tua', 'murid.email_orang_tua', 'murid.berat_badan', 'murid.tinggi_badan', 'murid.lingkar_kepala', 'kelas.nama_kelas', 'kelas.kode_kelas')
+            ->groupBy('murid.id', 'murid.nama_lengkap', 'murid.foto', 'murid.nama_orang_tua', 'murid.email_orang_tua', 'murid.berat_badan', 'murid.tinggi_badan', 'murid.lingkar_kepala', 'kelas.nama_kelas', 'kelas.kode_kelas', 'kelas.tingkat')
             ->orderBy('murid.nama_lengkap')
             ->get();
 

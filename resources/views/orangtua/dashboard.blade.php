@@ -176,130 +176,118 @@
             </div>
         </div>
 
-        <!-- Target Perkembangan -->
+        <!-- Tabs for child selection (both target and nilai) -->
         <div class="col-12">
-            <div class="card border-0 shadow-sm mb-3" style="border-radius: 20px;">
-                <div class="card-body p-3">
-                    <h6 class="fw-bold mb-0 text-dark small mb-3">Target Pencapaian Perkembangan</h6>
-
-                    <!-- Tabs for kelompok umur -->
-                    <ul class="nav nav-pills gap-2 mb-3 px-1 overflow-auto flex-nowrap pb-2" id="targetTabs" role="tablist" style="scrollbar-width: none; -ms-overflow-style: none;">
-                        @foreach($targetPerkembangan as $key => $target)
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link rounded-pill px-3 py-1 small fw-bold {{ $key == 'A' ? 'active' : '' }}"
-                                        id="target-tab-{{ $key }}"
-                                        data-bs-toggle="pill"
-                                        data-bs-target="#target-{{ $key }}"
-                                        type="button"
-                                        role="tab"
-                                        style="font-size: 0.75rem; white-space: nowrap;">
-                                    {{ $target['judul'] }}
-                                </button>
-                            </li>
-                        @endforeach
-                    </ul>
-
-                    <!-- Tab content -->
-                    <div class="tab-content" id="targetTabsContent">
-                        @foreach($targetPerkembangan as $key => $target)
-                            <div class="tab-pane fade {{ $key == 'A' ? 'show active' : '' }}" id="target-{{ $key }}" role="tabpanel">
-                                @foreach($target['bagian'] as $bagian)
+            <ul class="nav nav-pills gap-2 mb-3 px-1 overflow-auto flex-nowrap pb-2" id="childTabs" role="tablist" style="scrollbar-width: none; -ms-overflow-style: none;">
+                @foreach($anak as $index => $a)
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link rounded-pill px-3 py-1 small fw-bold {{ $index == 0 ? 'active' : '' }}"
+                                id="child-tab-{{ $a->id }}"
+                                data-bs-toggle="pill"
+                                data-bs-target="#child-{{ $a->id }}"
+                                type="button"
+                                role="tab"
+                                style="font-size: 0.75rem; white-space: nowrap;">
+                            {{ explode(' ', $a->nama_lengkap)[0] }}
+                        </button>
+                    </li>
+                @endforeach
+            </ul>
+            <div class="tab-content" id="childTabsContent">
+                @foreach($anak as $index => $a)
+                    <div class="tab-pane fade {{ $index == 0 ? 'show active' : '' }}" id="child-{{ $a->id }}" role="tabpanel">
+                        <!-- Target Pencapaian Perkembangan -->
+                        <div class="card border-0 shadow-sm mb-4" style="border-radius: 20px;">
+                            <div class="card-body p-3">
+                                <div class="d-flex align-items-center gap-2 mb-3">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; background-color: #6c5ce710;">
+                                        <i class="bi bi-bullseye text-primary" style="font-size: 0.9rem;"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0 text-dark small">Target Pencapaian Perkembangan</h6>
+                                        @if($a->tingkat)
+                                            <p class="text-muted mb-0 small" style="font-size: 0.7rem;">
+                                                @php
+                                                    $tingkatLabel = [
+                                                        'A' => 'Kelompok A (Usia 2 - <4 tahun)',
+                                                        'B' => 'Kelompok B (Usia 4 - <5 tahun)',
+                                                        'C' => 'Kelompok C (Usia 5 - <6 tahun)'
+                                                    ];
+                                                @endphp
+                                                {{ $tingkatLabel[$a->tingkat] ?? 'Kelompok A' }}
+                                            </p>
+                                        @endif
+                                    </div>
+                                </div>
+                                @php
+                                    $targetAnak = $targetPerkembangan[$a->tingkat] ?? $targetPerkembangan['A'];
+                                @endphp
+                                @foreach($targetAnak['bagian'] as $bagian)
                                     @php
                                         $style = $colorMap[$bagian['nama']] ?? ['text' => '#64748b', 'icon' => 'bi-circle'];
                                     @endphp
-                                    <div class="mb-3 pb-3 border-bottom last:border-0">
-                                        <div class="d-flex align-items-center gap-2 mb-2">
-                                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background-color: {{ $style['text'] }}10;">
-                                                <i class="bi {{ $style['icon'] }}" style="font-size: 1rem; color: {{ $style['text'] }};"></i>
+                                    <div class="mb-2 pb-2 border-bottom last:border-0">
+                                        <div class="d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#target-detail-{{ $a->id }}-{{ \Illuminate\Support\Str::slug($bagian['nama']) }}" style="cursor: pointer; background-color: {{ $style['text'] }}10; border-radius: 12px; padding: 8px 12px;">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background-color: {{ $style['text'] }}20;">
+                                                    <i class="bi {{ $style['icon'] }}" style="font-size: 0.9rem; color: {{ $style['text'] }};"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="fw-bold mb-0 text-dark small">{{ $bagian['nama'] }}</h6>
+                                                    <p class="text-muted mb-0" style="font-size: 0.65rem;">Bobot: {{ $bagian['bobot'] }}</p>
+                                                </div>
                                             </div>
-                                            <h6 class="fw-bold text-dark mb-0 small">{{ $bagian['nama'] }}</h6>
+                                            <i class="bi bi-chevron-down text-muted"></i>
                                         </div>
-                                        <ul class="mb-0 pl-6 ps-3">
-                                            @foreach($bagian['list'] as $item)
-                                                <li class="text-muted small mb-1" style="line-height: 1.5;">{{ $item }}</li>
-                                            @endforeach
-                                        </ul>
+                                        <div class="collapse show" id="target-detail-{{ $a->id }}-{{ \Illuminate\Support\Str::slug($bagian['nama']) }}">
+                                            <ul class="mb-0 ps-4 pt-2">
+                                                @foreach($bagian['list'] as $item)
+                                                    <li class="text-muted small mb-1" style="line-height: 1.5; font-size: 0.75rem;">{{ $item }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
                                     </div>
                                 @endforeach
                             </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Perhitungan Nilai -->
-        <div class="col-12">
-            @if($anak->count() > 1)
-                <!-- Tabs for multiple children -->
-                <ul class="nav nav-pills gap-2 mb-3 px-1 overflow-auto flex-nowrap pb-2" id="childNilaiTabs" role="tablist" style="scrollbar-width: none; -ms-overflow-style: none;">
-                    @foreach($anak as $index => $a)
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link rounded-pill px-3 py-1 small fw-bold {{ $index == 0 ? 'active' : '' }}"
-                                    id="child-nilai-tab-{{ $a->id }}"
-                                    data-bs-toggle="pill"
-                                    data-bs-target="#child-nilai-{{ $a->id }}"
-                                    type="button"
-                                    role="tab"
-                                    style="font-size: 0.75rem; white-space: nowrap;">
-                                {{ explode(' ', $a->nama_lengkap)[0] }}
-                            </button>
-                        </li>
-                    @endforeach
-                </ul>
-            @endif
-
-            <div class="tab-content" id="childNilaiTabsContent">
-                @foreach($anak as $index => $a)
-                    <div class="tab-pane fade {{ $index == 0 ? 'show active' : '' }}" id="child-nilai-{{ $a->id }}" role="tabpanel">
+                        </div>
+                        <!-- Perhitungan Nilai -->
                         <div class="card border-0 shadow-sm" style="border-radius: 20px;">
                             <div class="card-body p-3">
-                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="d-flex align-items-center justify-content-between mb-3">
                                     <h6 class="fw-bold mb-0 text-dark small">Perhitungan Nilai</h6>
-                                    <span class="text-muted small">{{ now()->translatedFormat('F Y') }}</span>
+                                    <span class="text-muted small" style="font-size: 0.7rem;">{{ now()->translatedFormat('F Y') }}</span>
                                 </div>
-                                <div class="mb-3">
-                                    <p class="text-muted small mb-1">{{ $a->nama_lengkap }}</p>
-                                </div>
-
+                                <p class="text-muted small mb-3">{{ $a->nama_lengkap }}</p>
                                 @if(isset($a->perhitungan_nilai['nilai_bagian']))
                                     <div class="row g-2 mb-3">
                                         @foreach($a->perhitungan_nilai['nilai_bagian'] as $bagian => $nilai)
                                             @php
                                                 $style = $colorMap[$bagian] ?? ['text' => '#64748b', 'icon' => 'bi-circle'];
                                             @endphp
-                                            <div class="col-12">
-                                                <div class="p-2 rounded-3" style="background-color: {{ $style['text'] }}10;">
-                                                    <div class="d-flex align-items-center justify-content-between mb-1">
-                                                        <div class="d-flex align-items-center gap-2">
-                                                            <i class="bi {{ $style['icon'] }}" style="font-size: 0.9rem; color: {{ $style['text'] }};"></i>
-                                                            <span class="text-dark small">{{ $bagian }}</span>
-                                                        </div>
-                                                        <span class="text-muted small">Bobot: {{ $bagianPenilaian[$bagian]['bobot'] }}</span>
+                                            <div class="col-12 col-md-4">
+                                                <div class="p-2 rounded-3 border" style="background-color: {{ $style['text'] }}10; border-color: {{ $style['text'] }}30 !important;">
+                                                    <div class="d-flex align-items-center gap-1 mb-1">
+                                                        <i class="bi {{ $style['icon'] }}" style="font-size: 0.7rem; color: {{ $style['text'] }};"></i>
+                                                        <span class="text-dark" style="font-size: 0.75rem;">{{ $bagian }}</span>
                                                     </div>
-                                                    <div class="progress mb-1" style="height: 6px; border-radius: 10px; background: rgba(0,0,0,0.05);">
-                                                        @if($nilai['persentase_kode'] > 0)
-                                                            <div class="progress-bar" role="progressbar" style="width: {{ $nilai['persentase_kode'] }}%; background-color: {{ $style['text'] }};"></div>
-                                                        @endif
+                                                    <p class="text-muted mb-1" style="font-size: 0.65rem;">Bobot: {{ $bagianPenilaian[$bagian]['bobot'] }}</p>
+                                                    <div class="mb-1">
+                                                        <span class="badge text-white" style="background-color: {{ $style['text'] }}; font-size: 0.6rem;">{{ $nilai['kode'] ?? '-' }} ({{ $nilai['persentase_kode'] }}%)</span>
                                                     </div>
-                                                    <div class="d-flex justify-content-between text-xs">
-                                                        <span class="fw-semibold" style="color: {{ $style['text'] }};">{{ $nilai['kode'] ?? '-' }} ({{ $nilai['persentase_kode'] }}%)</span>
-                                                        <span class="fw-semibold" style="color: {{ $style['text'] }};">{{ round($nilai['nilai'] ?? 0, 2) }}</span>
-                                                    </div>
+                                                    <p class="fw-bold mb-0" style="color: {{ $style['text'] }}; font-size: 0.9rem;">{{ round($nilai['nilai'] ?? 0, 2) }}</p>
                                                 </div>
                                             </div>
                                         @endforeach
                                     </div>
-
                                     <div class="pt-2 border-top">
-                                        <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
                                             <span class="fw-semibold text-dark">Total Nilai</span>
                                             <div class="text-right">
-                                                <div class="text-xl fw-bold text-primary">{{ round($a->perhitungan_nilai['total_nilai'] ?? 0, 2) }} / {{ $totalBobot }}</div>
+                                                <span class="text-muted small">{{ round($a->perhitungan_nilai['total_nilai'] ?? 0, 2) }} / {{ $totalBobot }}</span>
                                             </div>
                                         </div>
-                                        <div class="d-flex justify-content-end mt-1">
-                                            <span class="fw-bold text-primary" style="font-size: 1.25rem;">{{ round($a->perhitungan_nilai['total_persentase'] ?? 0, 2) }}%</span>
+                                        <div class="d-flex justify-content-end">
+                                            <span class="fw-bold text-primary" style="font-size: 1.3rem;">{{ round($a->perhitungan_nilai['total_persentase'] ?? 0, 2) }}%</span>
                                         </div>
                                     </div>
                                 @else
