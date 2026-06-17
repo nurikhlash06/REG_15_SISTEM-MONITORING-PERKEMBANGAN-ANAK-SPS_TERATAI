@@ -189,7 +189,7 @@
         </div>
     </div>
 
-    <!-- Chart & Aspect Section -->
+    <!-- Monthly Chart & Perhitungan Nilai -->
     <div class="row g-4 mb-4">
         <!-- Monthly Chart -->
         <div class="col-12">
@@ -213,7 +213,7 @@
                         <div class="d-flex align-items-start gap-2">
                             <i class="bi bi-info-circle text-primary mt-1"></i>
                             <p class="text-muted mb-0" style="font-size: 0.7rem; line-height: 1.4;">
-                                Grafik ini menunjukkan intensitas kegiatan belajar anak Anda. 
+                                Grafik ini menunjukkan intensitas kegiatan belajar anak Anda.
                                 <strong>Semakin tinggi titik grafik</strong>, semakin banyak aktivitas yang dicatat oleh guru pada bulan tersebut.
                             </p>
                         </div>
@@ -222,29 +222,44 @@
             </div>
         </div>
 
-        <!-- Development Aspects -->
+        <!-- Target Perkembangan Tabs -->
         <div class="col-12">
-            <div class="d-flex align-items-center justify-content-between mb-3 px-1">
-                <div>
-                    <h6 class="fw-bold mb-0 text-dark">Aspek Capaian</h6>
-                    <p class="text-muted small mb-0">Rata-rata perkembangan bulan ini</p>
-                </div>
-                <div class="badge bg-white text-dark shadow-sm border-0 rounded-pill px-3 py-2 fw-normal">
-                    <i class="bi bi-calendar3 text-primary me-1"></i> {{ now()->translatedFormat('F') }}
+            <div class="card border-0 shadow-sm mb-3" style="border-radius: 20px;">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <h6 class="fw-bold mb-0 text-dark small">Target Perkembangan</h6>
+                        @if($anak->count() > 0)
+                            <span class="text-muted small">Kelompok A (Usia 2 - <4 tahun)</span>
+                        @endif
+                    </div>
+                    @foreach($colorMap as $aspek => $style)
+                        <div class="d-flex align-items-center justify-content-between py-2 border-bottom last:border-0">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background-color: {{ $style['text'] }}10;">
+                                    <i class="bi {{ $style['icon'] }}" style="font-size: 1rem; color: {{ $style['text'] }};"></i>
+                                </div>
+                                <span class="text-dark small fw-semibold">{{ $aspek }}</span>
+                            </div>
+                            <i class="bi bi-chevron-down text-muted"></i>
+                        </div>
+                    @endforeach
                 </div>
             </div>
+        </div>
 
+        <!-- Perhitungan Nilai -->
+        <div class="col-12">
             @if($anak->count() > 1)
                 <!-- Tabs for multiple children -->
-                <ul class="nav nav-pills gap-2 mb-3 px-1 overflow-auto flex-nowrap pb-2" id="childAspectTabs" role="tablist" style="scrollbar-width: none; -ms-overflow-style: none;">
+                <ul class="nav nav-pills gap-2 mb-3 px-1 overflow-auto flex-nowrap pb-2" id="childNilaiTabs" role="tablist" style="scrollbar-width: none; -ms-overflow-style: none;">
                     @foreach($anak as $index => $a)
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link rounded-pill px-3 py-1 small fw-bold {{ $index == 0 ? 'active' : '' }}" 
-                                    id="child-tab-{{ $a->id }}" 
-                                    data-bs-toggle="pill" 
-                                    data-bs-target="#child-aspect-{{ $a->id }}" 
-                                    type="button" 
-                                    role="tab" 
+                            <button class="nav-link rounded-pill px-3 py-1 small fw-bold {{ $index == 0 ? 'active' : '' }}"
+                                    id="child-nilai-tab-{{ $a->id }}"
+                                    data-bs-toggle="pill"
+                                    data-bs-target="#child-nilai-{{ $a->id }}"
+                                    type="button"
+                                    role="tab"
                                     style="font-size: 0.75rem; white-space: nowrap;">
                                 {{ explode(' ', $a->nama_lengkap)[0] }}
                             </button>
@@ -253,57 +268,65 @@
                 </ul>
             @endif
 
-            <div class="tab-content" id="childAspectTabsContent">
+            <div class="tab-content" id="childNilaiTabsContent">
                 @foreach($anak as $index => $a)
-                    <div class="tab-pane fade {{ $index == 0 ? 'show active' : '' }}" id="child-aspect-{{ $a->id }}" role="tabpanel">
-                        <div class="row g-3">
-                            @forelse($a->aspek_stats as $stat)
-                                @php
-                                    $slug = \Illuminate\Support\Str::slug($stat->name);
-                                @endphp
-                                <div class="col-6">
-                                    <div class="card border-0 shadow-sm h-100 aspect-card-{{ $slug }}" style="border-radius: 20px; transition: transform 0.2s;">
-                                        <a href="{{ route('orangtua.perkembangan.index', ['murid_id' => $a->id, 'aspek' => $stat->name]) }}" class="text-decoration-none h-100 d-flex flex-column">
-                                            <div class="card-body p-3">
-                                                <div class="d-flex align-items-center gap-2 mb-2">
-                                                    <div class="aspek-icon-box aspect-icon-{{ $slug }}">
-                                                        <i class="bi {{ $stat->styles['icon'] }}" style="font-size: 0.9rem;"></i>
-                                                    </div>
-                                                    <h6 class="fw-bold text-dark mb-0" style="font-size: 0.75rem;">{{ $stat->name }}</h6>
-                                                </div>
-                                                
-                                                <div class="mb-2">
-                                                    @php
-                                                        $percentNum = (int)$stat->percent;
-                                                        $percentDisplay = "{$percentNum}%";
-                                                        $percentWidthStyle = "width:{$percentNum}%";
-                                                    @endphp
-                                                    <div class="d-flex align-items-baseline gap-1">
-                                                        <span class="fw-bold text-dark" style="font-size: 1.1rem;">{{ $percentDisplay }}</span>
-                                                        <span class="text-muted" style="font-size: 0.6rem;">Capaian</span>
-                                                    </div>
-                                                    <div class="progress" style="height: 5px; border-radius: 10px; background: rgba(0,0,0,0.05);">
-                                                        <div class="progress-bar" role="progressbar" style="<?php echo $percentWidthStyle; ?>; background-color: <?php echo $stat->styles['text'] ?? ''; ?>;"></div>
-                                                    </div>
-                                                </div>
+                    <div class="tab-pane fade {{ $index == 0 ? 'show active' : '' }}" id="child-nilai-{{ $a->id }}" role="tabpanel">
+                        <div class="card border-0 shadow-sm" style="border-radius: 20px;">
+                            <div class="card-body p-3">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <h6 class="fw-bold mb-0 text-dark small">Perhitungan Nilai</h6>
+                                    <span class="text-muted small">{{ now()->translatedFormat('F Y') }}</span>
+                                </div>
+                                <div class="mb-3">
+                                    <p class="text-muted small mb-1">{{ $a->nama_lengkap }}</p>
+                                </div>
 
-                                                <div class="d-flex align-items-center justify-content-between">
-                                                    <span class="badge rounded-pill" style="font-size: 0.6rem; background-color: <?php echo $stat->status_color; ?>20; color: <?php echo $stat->status_color; ?>; border: 1px solid <?php echo $stat->status_color; ?>40;">
-                                                        {{ $stat->status }}
-                                                    </span>
-                                                    <span class="text-muted" style="font-size: 0.6rem;">{{ $stat->count }} Lap.</span>
+                                @if(isset($a->perhitungan_nilai['nilai_bagian']))
+                                    <div class="row g-2 mb-3">
+                                        @foreach($a->perhitungan_nilai['nilai_bagian'] as $bagian => $nilai)
+                                            @php
+                                                $style = $colorMap[$bagian] ?? ['text' => '#64748b', 'icon' => 'bi-circle'];
+                                            @endphp
+                                            <div class="col-12">
+                                                <div class="p-2 rounded-3" style="background-color: {{ $style['text'] }}10;">
+                                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <i class="bi {{ $style['icon'] }}" style="font-size: 0.9rem; color: {{ $style['text'] }};"></i>
+                                                            <span class="text-dark small">{{ $bagian }}</span>
+                                                        </div>
+                                                        <span class="text-muted small">Bobot: {{ $bagianPenilaian[$bagian]['bobot'] }}</span>
+                                                    </div>
+                                                    <div class="progress mb-1" style="height: 6px; border-radius: 10px; background: rgba(0,0,0,0.05);">
+                                                        @if($nilai['persentase_kode'] > 0)
+                                                            <div class="progress-bar" role="progressbar" style="width: {{ $nilai['persentase_kode'] }}%; background-color: {{ $style['text'] }};"></div>
+                                                        @endif
+                                                    </div>
+                                                    <div class="d-flex justify-content-between text-xs">
+                                                        <span class="fw-semibold" style="color: {{ $style['text'] }};">{{ $nilai['kode'] ?? '-' }} ({{ $nilai['persentase_kode'] }}%)</span>
+                                                        <span class="fw-semibold" style="color: {{ $style['text'] }};">{{ round($nilai['nilai'] ?? 0, 2) }}</span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </a>
+                                        @endforeach
                                     </div>
-                                </div>
-                            @empty
-                                <div class="col-12">
-                                    <div class="card border-0 shadow-sm text-center py-4" style="border-radius: 20px;">
-                                        <p class="text-muted small mb-0">Belum ada data perkembangan bulan ini.</p>
+
+                                    <div class="pt-2 border-top">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="fw-semibold text-dark">Total Nilai</span>
+                                            <div class="text-right">
+                                                <div class="text-xl fw-bold text-primary">{{ round($a->perhitungan_nilai['total_nilai'] ?? 0, 2) }} / {{ $totalBobot }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-end mt-1">
+                                            <span class="fw-bold text-primary" style="font-size: 1.25rem;">{{ round($a->perhitungan_nilai['total_persentase'] ?? 0, 2) }}%</span>
+                                        </div>
                                     </div>
-                                </div>
-                            @endforelse
+                                @else
+                                    <div class="text-center py-3">
+                                        <p class="text-muted small mb-0">Belum ada data perhitungan nilai.</p>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 @endforeach

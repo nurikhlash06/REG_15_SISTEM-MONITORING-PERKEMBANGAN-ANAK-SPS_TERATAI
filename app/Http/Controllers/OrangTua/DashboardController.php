@@ -24,9 +24,10 @@ class DashboardController extends Controller
         $anak = $this->anakCards($user->id);
         $chartPerBulan = $this->perkembanganBulananChart($user->id);
 
-        // Hitung statistik aspek per anak
+        // Hitung statistik aspek dan perhitungan nilai per anak
         foreach ($anak as $a) {
             $a->aspek_stats = $this->aspekStatsPerAnak($a->id);
+            $a->perhitungan_nilai = $this->hitungPerkembanganPerAnak($a->id);
         }
 
         // Generate dynamic styles once for all aspects
@@ -39,6 +40,11 @@ class DashboardController extends Controller
             'C' => $this->getNarasiOtomatis('C'),
         ];
 
+        // Siapkan data untuk view
+        $colorMap = $this->getColorMap();
+        $bagianPenilaian = $this->getBagianPenilaian();
+        $totalBobot = $this->getTotalBobot();
+
         return view('orangtua.dashboard', [
             'user' => $user,
             'stats' => [
@@ -48,6 +54,9 @@ class DashboardController extends Controller
             'chartPerBulan' => $chartPerBulan,
             'targetPerkembangan' => $targetPerkembangan,
             'dynamicStyles' => $dynamicStyles,
+            'colorMap' => $colorMap,
+            'bagianPenilaian' => $bagianPenilaian,
+            'totalBobot' => $totalBobot,
         ]);
     }
 
@@ -105,6 +114,31 @@ class DashboardController extends Controller
         }
 
         return $stats;
+    }
+
+    private function hitungPerkembanganPerAnak(int $muridId): array
+    {
+        if (! Schema::hasTable('perkembangan')) {
+            return $this->hitungPerkembangan([]);
+        }
+
+        // Ambil data perkembangan terakhir per aspek bulan ini
+        $perkembanganTerbaru = [];
+        foreach (array_keys($this->getColorMap()) as $aspek) {
+            $latest = DB::table('perkembangan')
+                ->where('murid_id', $muridId)
+                ->where('aspek', $aspek)
+                ->whereMonth('tanggal', now()->month)
+                ->whereYear('tanggal', now()->year)
+                ->orderBy('tanggal', 'desc')
+                ->first();
+            if ($latest) {
+                $perkembanganTerbaru[$aspek] = $latest;
+            }
+        }
+
+        // Panggil method dari trait untuk menghitung nilai
+        return $this->hitungPerkembangan($perkembanganTerbaru);
     }
 
     private function anakCards(int $userId)
