@@ -102,7 +102,7 @@ class PerkembanganController extends Controller
             'murid_id' => ['required', 'integer', 'exists:murid,id'],
             'tanggal' => ['required', 'date'],
             'aspek' => ['required', 'string', 'max:255'],
-            'skor' => ['required', 'integer', 'min:1', 'max:4'],
+            'skor' => ['required', 'string', 'in:BM,KM,SM,K'],
             'catatan' => ['required', 'string'],
         ]);
 
@@ -128,7 +128,7 @@ class PerkembanganController extends Controller
             'murid_id' => ['required', 'integer', 'exists:murid,id'],
             'tanggal' => ['required', 'date'],
             'aspek' => ['required', 'string', 'max:255'],
-            'skor' => ['required', 'integer', 'min:1', 'max:4'],
+            'skor' => ['required', 'string', 'in:BM,KM,SM,K'],
             'catatan' => ['required', 'string'],
         ]);
 
