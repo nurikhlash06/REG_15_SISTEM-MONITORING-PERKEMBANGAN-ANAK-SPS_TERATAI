@@ -204,6 +204,8 @@ class CapaianPerkembanganController extends Controller
     public function destroyRiwayat($id, $bulan, $tahun)
     {
         $murid = Murid::findOrFail($id);
+        $bulan = (int)$bulan;
+        $tahun = (int)$tahun;
         
         Perkembangan::where('murid_id', $murid->id)
             ->whereMonth('tanggal', $bulan)
