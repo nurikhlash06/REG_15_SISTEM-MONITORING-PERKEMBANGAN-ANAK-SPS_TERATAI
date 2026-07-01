@@ -28,7 +28,7 @@ class KelasController extends Controller
             'kode_kelas' => 'required|string|max:20|unique:kelas,kode_kelas',
             'deskripsi' => 'nullable|string',
             'wali_kelas' => 'nullable|string|max:100',
-            'tingkat' => 'required|in:A,B,B1',
+            'tingkat' => 'required|string|max:10',
         ]);
 
         if ($validator->fails()) {
@@ -65,7 +65,7 @@ class KelasController extends Controller
             'kode_kelas' => 'required|string|max:20|unique:kelas,kode_kelas,' . $id,
             'deskripsi' => 'nullable|string',
             'wali_kelas' => 'nullable|string|max:100',
-            'tingkat' => 'required|in:A,B,B1',
+            'tingkat' => 'required|string|max:10',
             'status' => 'required|in:aktif,nonaktif',
         ]);
 
