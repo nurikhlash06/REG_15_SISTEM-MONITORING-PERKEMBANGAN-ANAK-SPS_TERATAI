@@ -64,16 +64,7 @@
                         @forelse($murid as $m)
                             <tr>
                                 <td style="width: 64px;">
-                                    @php
-                                        $fotoPath = $m->foto ? (str_starts_with($m->foto, 'http') ? $m->foto : asset('storage/' . $m->foto)) : null;
-                                    @endphp
-                                    @if($fotoPath)
-                                        <img src="{{ $fotoPath }}" alt="Foto {{ $m->nama_lengkap }}" class="rounded-circle shadow-sm" style="width: 50px; height: 50px; object-fit: cover; border: 2px solid white;">
-                                    @else
-                                        <div class="d-flex align-items-center justify-content-center bg-light rounded-circle" style="width: 50px; height: 50px; border: 1px dashed #ddd;">
-                                            <img src="{{ asset('images/logo-paud.png') }}" alt="Logo" style="width: 35px; height: 35px; object-fit: contain; opacity: 0.7;">
-                                        </div>
-                                    @endif
+                                    <img src="{{ $m->foto_url }}" alt="Foto {{ $m->nama_lengkap }}" class="rounded-circle shadow-sm" style="width: 50px; height: 50px; object-fit: cover; border: 2px solid white;">
                                 </td>
                                 <td>
                                     <div class="fw-bold">

@@ -47,5 +47,18 @@ class Murid extends Model
     {
         return $this->belongsTo(Kelas::class);
     }
+
+    public function getFotoUrlAttribute()
+    {
+        if (!$this->foto) {
+            return asset('images/logo-paud.png');
+        }
+
+        if (str_starts_with($this->foto, 'http')) {
+            return $this->foto;
+        }
+
+        return asset('storage/' . $this->foto);
+    }
 }
 
