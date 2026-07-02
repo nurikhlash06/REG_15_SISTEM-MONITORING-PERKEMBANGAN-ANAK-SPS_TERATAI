@@ -18,72 +18,46 @@
 
     @if($selectedMurid)
     <div class="mb-4">
-        <div class="card border-0 shadow-lg mb-4" style="border-radius: 24px; overflow: hidden;">
-            <div class="card-body p-0">
-                <div class="row g-0">
-                    <div class="col-md-4" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);">
-                        <div class="p-4 text-white text-center h-100 d-flex flex-column justify-content-center align-items-center">
-                            <div class="position-relative mb-3">
-                                @php
-                                    $fotoPath = $selectedMurid->foto ? (str_starts_with($selectedMurid->foto, 'http') ? $selectedMurid->foto : asset('storage/' . $selectedMurid->foto)) : null;
-                                @endphp
-                                @if($fotoPath)
-                                    <img src="{{ $fotoPath }}" alt="Foto" class="rounded-circle shadow" style="width: 140px; height: 140px; object-fit: cover; border: 4px solid rgba(255,255,255,0.3);">
-                                @else
-                                    <div class="d-flex align-items-center justify-content-center shadow-sm bg-white bg-opacity-20 rounded-circle" style="width: 140px; height: 140px; border: 2px dashed rgba(255,255,255,0.4);">
-                                        <img src="{{ asset('images/logo-paud.png') }}" alt="Logo" style="width: 110px; height: 110px; object-fit: contain;">
-                                    </div>
-                                @endif
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-2 text-center">
+                        @php
+                            $fotoPath = $selectedMurid->foto ? (str_starts_with($selectedMurid->foto, 'http') ? $selectedMurid->foto : asset('storage/' . $selectedMurid->foto)) : null;
+                        @endphp
+                        @if($fotoPath)
+                            <img src="{{ $fotoPath }}" alt="Foto" class="rounded-circle shadow" style="width: 80px; height: 80px; object-fit: cover;">
+                        @else
+                            <div class="d-flex align-items-center justify-content-center bg-light rounded-circle mx-auto" style="width: 80px; height: 80px; border: 2px dashed #ddd;">
+                                <img src="{{ asset('images/logo-paud.png') }}" alt="Logo" style="width: 50px; height: 50px; object-fit: contain;">
                             </div>
-                            <h4 class="fw-bold mb-1">{{ $selectedMurid->nama_lengkap }}</h4>
-                            <p class="text-white text-opacity-75 mb-3"><small>{{ $selectedMurid->kelas->nama_kelas ?? 'Belum ada kelas' }}</small></p>
-                            <div class="mt-auto d-flex gap-2 flex-wrap justify-content-center">
-                                <a href="{{ route('guru.perkembangan.create', ['murid_id' => $selectedMurid->id]) }}" class="btn btn-sm btn-light text-primary fw-bold px-3 rounded-pill">
-                                    <i class="bi bi-plus-circle me-1"></i> Tambah Catatan
-                                </a>
-                                <a href="{{ route('guru.murid.show', $selectedMurid->id) }}" class="btn btn-sm btn-outline-light rounded-pill px-3">
-                                    <i class="bi bi-eye me-1"></i> Profil
-                                </a>
+                        @endif
+                    </div>
+                    <div class="col-md-4">
+                        <h5 class="fw-bold mb-1">{{ $selectedMurid->nama_lengkap }}</h5>
+                        <p class="text-muted mb-1 small"><i class="bi bi-book me-1"></i>{{ $selectedMurid->kelas->nama_kelas ?? 'Belum ada kelas' }}</p>
+                        <p class="text-muted mb-0 small"><i class="bi bi-person me-1"></i>{{ $selectedMurid->nama_orang_tua ?? '-' }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <div class="small text-muted">NIK</div>
+                                <div class="fw-semibold">{{ $selectedMurid->nik ?? '-' }}</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="small text-muted">NISN</div>
+                                <div class="fw-semibold">{{ $selectedMurid->nisn ?? '-' }}</div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-8" style="background: #f8fafc;">
-                        <div class="p-4">
-                            <div class="d-flex align-items-center gap-2 mb-3">
-                                <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                    <i class="bi bi-info-circle text-primary"></i>
-                                </div>
-                                <div>
-                                    <h5 class="fw-bold text-dark mb-0" style="font-size: 1rem;">Informasi Murid</h5>
-                                    <p class="text-muted mb-0 small">Data identitas dan kelas</p>
-                                </div>
-                            </div>
-                            <div class="row g-3">
-                                <div class="col-6">
-                                    <div class="p-3 bg-white rounded-4 border h-100">
-                                        <div class="text-muted small mb-1">NIK</div>
-                                        <div class="fw-semibold text-dark">{{ $selectedMurid->nik ?? '-' }}</div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="p-3 bg-white rounded-4 border h-100">
-                                        <div class="text-muted small mb-1">NISN</div>
-                                        <div class="fw-semibold text-dark">{{ $selectedMurid->nisn ?? '-' }}</div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="p-3 bg-white rounded-4 border h-100">
-                                        <div class="text-muted small mb-1">Jenis Kelamin</div>
-                                        <div class="fw-semibold text-dark">{{ $selectedMurid->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="p-3 bg-white rounded-4 border h-100">
-                                        <div class="text-muted small mb-1">Orang Tua</div>
-                                        <div class="fw-semibold text-dark small">{{ $selectedMurid->nama_orang_tua ?? '-' }}</div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="col-md-2 text-end">
+                        <div class="d-flex gap-2 flex-wrap justify-content-end">
+                            <a href="{{ route('guru.perkembangan.create', ['murid_id' => $selectedMurid->id]) }}" class="btn btn-sm btn-primary">
+                                <i class="bi bi-plus-circle me-1"></i>Tambah
+                            </a>
+                            <a href="{{ route('guru.murid.show', $selectedMurid->id) }}" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-eye me-1"></i>Profil
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -91,59 +65,42 @@
         </div>
 
         <div class="mb-3">
-            <div class="d-flex align-items-center justify-content-between">
-                <div>
-                    <h5 class="fw-bold text-dark mb-1"><i class="bi bi-grid-fill me-2 text-primary"></i>Status Capaian Semua Aspek</h5>
-                    <p class="text-muted mb-0 small">Catatan perkembangan terbaru untuk setiap kategori.</p>
-                </div>
-                <div class="badge bg-primary bg-opacity-10 text-primary border-0 rounded-pill px-3 py-2">
-                    {{ now()->translatedFormat('F Y') }}
-                </div>
-            </div>
+            <h6 class="fw-bold text-dark mb-3"><i class="bi bi-grid-fill me-2 text-primary"></i>Status Capaian Terbaru</h6>
         </div>
 
-        <div class="row g-4">
+        <div class="row g-3">
             @foreach($aspekSummary as $aspek)
                 @php 
                     $styles = $aspek->styles;
                     $slug = \Illuminate\Support\Str::slug($aspek->name);
                 @endphp
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 border-0 shadow-sm aspek-card-<?php echo $slug; ?>" style="border-radius: 20px;">
-                        <div class="card-body p-4">
-                            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm aspek-card-<?php echo $slug; ?>" style="border-radius: 16px;">
+                        <div class="card-body p-3">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
                                 <div class="d-flex align-items-center gap-2">
-                                    <div class="aspek-icon-box aspect-icon-<?php echo $slug; ?>" style="width: 44px; height: 44px;">
-                                        <i class="bi {{ $styles['icon'] }}"></i>
+                                    <div class="aspek-icon-box aspect-icon-<?php echo $slug; ?>" style="width: 32px; height: 32px;">
+                                        <i class="bi {{ $styles['icon'] }}" style="font-size: 1rem;"></i>
                                     </div>
-                                    <h6 class="fw-bold text-dark mb-0" style="font-size: 0.85rem;">{{ $aspek->name }}</h6>
+                                    <span class="fw-bold text-dark small">{{ $aspek->name }}</span>
                                 </div>
                                 @if($aspek->skor > 0 && isset($skorLabels[$aspek->skor]))
-                                    <span class="badge rounded-pill border-0 px-3 py-1 fw-bold" style="font-size: 0.75rem; background-color: <?php echo $skorLabels[$aspek->skor]['color']; ?>20; color: <?php echo $skorLabels[$aspek->skor]['color']; ?>; border: 1px solid <?php echo $skorLabels[$aspek->skor]['color']; ?>40;">
+                                    <span class="badge rounded-pill border-0 px-2 py-1 fw-bold" style="font-size: 0.7rem; background-color: <?php echo $skorLabels[$aspek->skor]['color']; ?>20; color: <?php echo $skorLabels[$aspek->skor]['color']; ?>; border: 1px solid <?php echo $skorLabels[$aspek->skor]['color']; ?>40;">
                                         {{ $skorLabels[$aspek->skor]['short'] }}
                                     </span>
                                 @endif
                             </div>
                             
                             @if($aspek->catatan)
-                                <div class="p-3 rounded-4 mb-3 bg-aspek" style="min-height: 80px;">
-                                    <p class="mb-0 text-dark" style="font-size: 0.8rem; line-height: 1.5;">{{ Str::limit($aspek->catatan, 120) }}</p>
+                                <div class="p-2 rounded-3 mb-2 bg-aspek" style="font-size: 0.75rem; line-height: 1.4;">
+                                    {{ Str::limit($aspek->catatan, 80) }}
                                 </div>
-                                <div class="d-flex align-items-center justify-content-between" style="font-size: 0.75rem;">
-                                    <span class="text-muted"><i class="bi bi-calendar3 me-1"></i>{{ $aspek->tanggal?->format('d M Y') }}</span>
-                                    <a href="{{ route('guru.perkembangan.index', ['murid_id' => $selectedMurid->id, 'aspek' => $aspek->name]) }}" class="text-primary text-decoration-none fw-semibold">
-                                        Riwayat <i class="bi bi-arrow-right small ms-1"></i>
-                                    </a>
+                                <div class="d-flex align-items-center justify-content-between text-muted" style="font-size: 0.7rem;">
+                                    <span><i class="bi bi-calendar3 me-1"></i>{{ $aspek->tanggal?->format('d M Y') }}</span>
                                 </div>
                             @else
-                                <div class="p-4 rounded-4 text-center mb-2" style="background-color: rgba(0,0,0,0.03); border: 2px dashed rgba(0,0,0,0.1);">
-                                    <i class="bi bi-journal-x text-muted fs-4 mb-2 d-block"></i>
-                                    <span class="text-muted small">Belum ada catatan</span>
-                                </div>
-                                <div class="text-center">
-                                    <a href="{{ route('guru.perkembangan.create', ['murid_id' => $selectedMurid->id, 'aspek' => $aspek->name]) }}" class="btn btn-sm btn-outline-primary rounded-pill fw-semibold px-3">
-                                        <i class="bi bi-plus-circle me-1"></i> Input Sekarang
-                                    </a>
+                                <div class="text-center text-muted py-2" style="font-size: 0.75rem;">
+                                    <i class="bi bi-journal-x me-1"></i>Belum ada catatan
                                 </div>
                             @endif
                         </div>
