@@ -246,23 +246,17 @@ trait HasAspekStyles
      */
     protected function getStatusWarna(string $tingkat, float $totalPersentase): array
     {
-        // Kondisi khusus untuk 100%
-        if ($totalPersentase == 100) {
-            return [
-                'status' => 'merah',
-                'color' => '#dc2626',
-                'bg_color' => '#fef2f2',
-            ];
-        }
-
         $kelompokUsia = $this->getKelompokUsia();
-        $config = $kelompokUsia[$tingkat] ?? $kelompokUsia['A'];
+        // Ambil huruf pertama dari tingkat (misal: B1 -> B, A2 -> A)
+        $tingkatHuruf = substr($tingkat, 0, 1);
+        $config = $kelompokUsia[$tingkatHuruf] ?? $kelompokUsia['A'];
+        $tingkatAktual = $kelompokUsia[$tingkatHuruf] ? $tingkatHuruf : 'A';
 
         $status = 'merah';
         $color = '#ef4444';
         $bgColor = '#fef2f2';
 
-        if ($tingkat === 'A') {
+        if ($tingkatAktual === 'A') {
             if ($totalPersentase >= 75) {
                 $status = 'hijau';
                 $color = '#10b981';
@@ -272,7 +266,7 @@ trait HasAspekStyles
                 $color = '#f59e0b';
                 $bgColor = '#fffbeb';
             }
-        } elseif ($tingkat === 'B') {
+        } elseif ($tingkatAktual === 'B') {
             if ($totalPersentase >= 85) {
                 $status = 'hijau';
                 $color = '#10b981';
@@ -282,7 +276,7 @@ trait HasAspekStyles
                 $color = '#f59e0b';
                 $bgColor = '#fffbeb';
             }
-        } elseif ($tingkat === 'C') {
+        } elseif ($tingkatAktual === 'C') {
             if ($totalPersentase >= 95) {
                 $status = 'hijau';
                 $color = '#10b981';
