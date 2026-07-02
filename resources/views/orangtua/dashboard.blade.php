@@ -4,7 +4,7 @@
 
 @section('content')
     @if(isset($dynamicStyles))
-        <style><?php echo $dynamicStyles; ?></style>
+        <style>{!! $dynamicStyles !!}</style>
     @endif
     <!-- Welcome Header -->
     <div class="mb-4 d-flex align-items-center justify-content-between">

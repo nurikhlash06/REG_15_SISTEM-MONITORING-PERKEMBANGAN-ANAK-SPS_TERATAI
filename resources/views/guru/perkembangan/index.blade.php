@@ -4,7 +4,7 @@
 
 @section('content')
     @if(isset($dynamicStyles))
-        <style><?php echo $dynamicStyles; ?></style>
+        <style>{!! $dynamicStyles !!}</style>
     @endif
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
         <div>
@@ -75,17 +75,17 @@
                     $slug = \Illuminate\Support\Str::slug($aspek->name);
                 @endphp
                 <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm aspek-card-<?php echo $slug; ?>" style="border-radius: 16px;">
+                    <div class="card h-100 border-0 shadow-sm aspek-card-{{ $slug }}" style="border-radius: 16px;">
                         <div class="card-body p-3">
                             <div class="d-flex align-items-center justify-content-between mb-2">
                                 <div class="d-flex align-items-center gap-2">
-                                    <div class="aspek-icon-box aspect-icon-<?php echo $slug; ?>" style="width: 32px; height: 32px;">
+                                    <div class="aspek-icon-box aspect-icon-{{ $slug }}" style="width: 32px; height: 32px;">
                                         <i class="bi {{ $styles['icon'] }}" style="font-size: 1rem;"></i>
                                     </div>
                                     <span class="fw-bold text-dark small">{{ $aspek->name }}</span>
                                 </div>
                                 @if($aspek->skor > 0 && isset($skorLabels[$aspek->skor]))
-                                    <span class="badge rounded-pill border-0 px-2 py-1 fw-bold" style="font-size: 0.7rem; background-color: <?php echo $skorLabels[$aspek->skor]['color']; ?>20; color: <?php echo $skorLabels[$aspek->skor]['color']; ?>; border: 1px solid <?php echo $skorLabels[$aspek->skor]['color']; ?>40;">
+                                    <span class="badge rounded-pill border-0 px-2 py-1 fw-bold" style="font-size: 0.7rem; background-color: {{ $skorLabels[$aspek->skor]['color'] }}20; color: {{ $skorLabels[$aspek->skor]['color'] }}; border: 1px solid {{ $skorLabels[$aspek->skor]['color'] }}40;">
                                         {{ $skorLabels[$aspek->skor]['short'] }}
                                     </span>
                                 @endif
@@ -194,7 +194,7 @@
                                 <td class="fw-semibold small">{{ $p->aspek }}</td>
                                 <td>
                                     @if($p->skor && isset($skorLabels[$p->skor]))
-                                        <span class="badge rounded-pill px-3" style="background-color: <?php echo $skorLabels[$p->skor]['color']; ?>20; color: <?php echo $skorLabels[$p->skor]['color']; ?>; border: 1px solid <?php echo $skorLabels[$p->skor]['color']; ?>40; font-size: 0.75rem;">
+                                        <span class="badge rounded-pill px-3" style="background-color: {{ $skorLabels[$p->skor]['color'] }}20; color: {{ $skorLabels[$p->skor]['color'] }}; border: 1px solid {{ $skorLabels[$p->skor]['color'] }}40; font-size: 0.75rem;">
                                             {{ $skorLabels[$p->skor]['short'] }}
                                         </span>
                                     @else
