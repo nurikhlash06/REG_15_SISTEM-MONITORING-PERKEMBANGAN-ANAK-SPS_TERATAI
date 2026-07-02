@@ -246,6 +246,15 @@ trait HasAspekStyles
      */
     protected function getStatusWarna(string $tingkat, float $totalPersentase): array
     {
+        // Kondisi khusus untuk 100%
+        if ($totalPersentase == 100) {
+            return [
+                'status' => 'emas',
+                'color' => '#fbbf24',
+                'bg_color' => '#fffbeb',
+            ];
+        }
+
         $kelompokUsia = $this->getKelompokUsia();
         $config = $kelompokUsia[$tingkat] ?? $kelompokUsia['A'];
 
