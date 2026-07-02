@@ -141,17 +141,21 @@
         
         .aspek-seni .text-aspek { color: #be185d !important; }
         
-        /* Pagination Styling - Smaller */
+        /* Pagination Styling - Extra Small */
         .pagination {
             margin: 0;
+            font-size: 0.75rem;
         }
         .pagination .page-link {
-            padding: 0.375rem 0.625rem;
-            font-size: 0.85rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
         }
         .pagination .page-item:first-child .page-link,
         .pagination .page-item:last-child .page-link {
-            border-radius: 0.375rem;
+            border-radius: 0.25rem;
+        }
+        .pagination .page-item.disabled .page-link {
+            color: #adb5bd;
         }
     </style>
     @stack('styles')
