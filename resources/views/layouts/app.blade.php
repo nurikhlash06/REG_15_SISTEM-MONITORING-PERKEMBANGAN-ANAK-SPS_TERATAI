@@ -140,6 +140,19 @@
         .badge-aspek { background-color: var(--aspek-bg); color: var(--aspek-color); }
         
         .aspek-seni .text-aspek { color: #be185d !important; }
+        
+        /* Pagination Styling - Smaller */
+        .pagination {
+            margin: 0;
+        }
+        .pagination .page-link {
+            padding: 0.375rem 0.625rem;
+            font-size: 0.85rem;
+        }
+        .pagination .page-item:first-child .page-link,
+        .pagination .page-item:last-child .page-link {
+            border-radius: 0.375rem;
+        }
     </style>
     @stack('styles')
 
