@@ -44,7 +44,7 @@ class PerkembanganController extends Controller
             $query->where('aspek', $request->aspek);
         }
 
-        $perkembangan = $query->simplePaginate(10)->withQueryString();
+        $perkembangan = $query->paginate(10)->withQueryString();
         
         // Hitung ringkasan capaian jika ada murid yang terpilih/dicari
         $aspekSummary = [];

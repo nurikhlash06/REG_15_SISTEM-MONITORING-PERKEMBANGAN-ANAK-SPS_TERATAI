@@ -228,8 +228,8 @@
             </div>
         </div>
         @if($perkembangan->hasPages())
-            <div class="card-body">
-                {{ $perkembangan->links() }}
+            <div class="card-body py-1">
+                {{ $perkembangan->links('vendor.pagination.small') }}
             </div>
         @endif
     </div>
