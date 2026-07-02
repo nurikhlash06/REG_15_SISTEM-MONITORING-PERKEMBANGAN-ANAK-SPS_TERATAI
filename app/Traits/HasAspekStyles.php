@@ -44,10 +44,10 @@ trait HasAspekStyles
     protected function getKodePenilaian(): array
     {
         return [
-            'BM' => ['short' => 'BM', 'full' => 'Belum Muncul', 'label' => 'Belum Muncul', 'persentase' => 0, 'color' => '#ef4444'],
-            'KM' => ['short' => 'KM', 'full' => 'Kadang-kadang Muncul', 'label' => 'Kadang-kadang Muncul', 'persentase' => 25, 'color' => '#f59e0b'],
-            'SM' => ['short' => 'SM', 'full' => 'Sering Muncul', 'label' => 'Sering Muncul', 'persentase' => 75, 'color' => '#10b981'],
-            'K' => ['short' => 'K', 'full' => 'Konsisten', 'label' => 'Konsisten', 'persentase' => 100, 'color' => '#6366f1'],
+            'BM' => ['short' => 'BM', 'full' => 'Belum Muncul', 'label' => 'Belum Muncul', 'persentase' => 0, 'color' => '#dc2626'],
+            'KM' => ['short' => 'KM', 'full' => 'Kadang-kadang Muncul', 'label' => 'Kadang-kadang Muncul', 'persentase' => 25, 'color' => '#f97316'],
+            'SM' => ['short' => 'SM', 'full' => 'Sering Muncul', 'label' => 'Sering Muncul', 'persentase' => 75, 'color' => '#22c55e'],
+            'K' => ['short' => 'K', 'full' => 'Konsisten', 'label' => 'Konsisten', 'persentase' => 100, 'color' => '#8b5cf6'],
         ];
     }
 
