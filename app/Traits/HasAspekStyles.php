@@ -56,6 +56,8 @@ trait HasAspekStyles
      */
     protected function getNarasiOtomatis(string $tingkat): array
     {
+        // Ambil huruf pertama dari tingkat (misal: B1 -> B, A2 -> A)
+        $tingkatHuruf = substr($tingkat, 0, 1);
         $target = [
             'A' => [
                 'judul' => 'Kelompok A (Usia 2 - <4 tahun)',
@@ -199,7 +201,7 @@ trait HasAspekStyles
             ],
         ];
 
-        return $target[$tingkat] ?? $target['A'];
+        return $target[$tingkatHuruf] ?? $target['A'];
     }
 
     /**
