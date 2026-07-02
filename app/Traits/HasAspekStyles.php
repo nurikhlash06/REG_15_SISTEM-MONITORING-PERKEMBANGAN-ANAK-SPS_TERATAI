@@ -13,12 +13,12 @@ trait HasAspekStyles
     {
         return [
             'Agama & Moral' => [
-                'bobot' => 21,
+                'bobot' => 20,
                 'icon' => 'bi-star-fill',
                 'color' => '#f59e0b',
             ],
             'Perkembangan Fisik' => [
-                'bobot' => 6,
+                'bobot' => 10,
                 'icon' => 'bi-heart-pulse',
                 'color' => '#10b981',
             ],
@@ -62,7 +62,7 @@ trait HasAspekStyles
                 'bagian' => [
                     [
                         'nama' => 'Agama & Moral',
-                        'bobot' => 21,
+                        'bobot' => 20,
                         'warna' => '#f59e0b',
                         'icon' => 'bi-star-fill',
                         'list' => [
@@ -76,7 +76,7 @@ trait HasAspekStyles
                     ],
                     [
                         'nama' => 'Perkembangan Fisik',
-                        'bobot' => 6,
+                        'bobot' => 10,
                         'warna' => '#10b981',
                         'icon' => 'bi-heart-pulse',
                         'list' => [
@@ -110,7 +110,7 @@ trait HasAspekStyles
                 'bagian' => [
                     [
                         'nama' => 'Agama & Moral',
-                        'bobot' => 21,
+                        'bobot' => 20,
                         'warna' => '#f59e0b',
                         'icon' => 'bi-star-fill',
                         'list' => [
@@ -124,7 +124,7 @@ trait HasAspekStyles
                     ],
                     [
                         'nama' => 'Perkembangan Fisik',
-                        'bobot' => 6,
+                        'bobot' => 10,
                         'warna' => '#10b981',
                         'icon' => 'bi-heart-pulse',
                         'list' => [
@@ -156,7 +156,7 @@ trait HasAspekStyles
                 'bagian' => [
                     [
                         'nama' => 'Agama & Moral',
-                        'bobot' => 21,
+                        'bobot' => 20,
                         'warna' => '#f59e0b',
                         'icon' => 'bi-star-fill',
                         'list' => [
@@ -170,7 +170,7 @@ trait HasAspekStyles
                     ],
                     [
                         'nama' => 'Perkembangan Fisik',
-                        'bobot' => 6,
+                        'bobot' => 10,
                         'warna' => '#10b981',
                         'icon' => 'bi-heart-pulse',
                         'list' => [
