@@ -11,11 +11,29 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <!-- Fix Bootstrap Icons Size -->
+    <!-- Fix Bootstrap Icons Size & Small Pagination -->
     <style>
         i[class^="bi-"] {
             font-size: 1rem !important;
             display: inline-block;
+        }
+        
+        /* Ultra Small Pagination */
+        .pagination {
+            margin: 0;
+            font-size: 0.65rem !important;
+        }
+        .pagination .page-link {
+            padding: 0.15rem 0.4rem !important;
+            font-size: 0.65rem !important;
+            line-height: 1.2;
+        }
+        .pagination .page-item:first-child .page-link,
+        .pagination .page-item:last-child .page-link {
+            border-radius: 0.15rem;
+        }
+        .pagination .page-item.disabled .page-link {
+            color: #adb5bd;
         }
     </style>
 
