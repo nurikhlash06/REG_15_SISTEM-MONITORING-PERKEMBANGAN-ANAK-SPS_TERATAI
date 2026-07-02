@@ -15,7 +15,7 @@ trait HasAspekStyles
             'Agama & Moral' => [
                 'bobot' => 20,
                 'icon' => 'bi-star-fill',
-                'color' => '#f59e0b',
+                'color' => '#048f14ff',
             ],
             'Perkembangan Fisik' => [
                 'bobot' => 10,
@@ -246,15 +246,6 @@ trait HasAspekStyles
      */
     protected function getStatusWarna(string $tingkat, float $totalPersentase): array
     {
-        // Kondisi khusus untuk 100%
-        if ($totalPersentase == 100) {
-            return [
-                'status' => 'emas',
-                'color' => '#fbbf24',
-                'bg_color' => '#fffbeb',
-            ];
-        }
-
         $kelompokUsia = $this->getKelompokUsia();
         $config = $kelompokUsia[$tingkat] ?? $kelompokUsia['A'];
 
